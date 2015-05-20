@@ -1,0 +1,270 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="choose_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByGuanXianTime()">查询</a>
+        <a class="btn submit" href="{:U('Manage/excelXianjin',array('date'=>$dateVal))}">导出</a>
+        日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>
+    </span>
+    <div class="current">管理现金流量表</div>
+</div>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td width="30%">项目</td>
+                <td>金额</td>
+                <td>内部结构</td>
+                <td>流入结构</td>
+                <td>流出结构</td>
+                <td>流入流出比</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="cashs" id="cash">
+            <tr  id="{$cash['id']}" >
+                <td style="display: none;">{$cash['id']}</td>
+                <td><if condition='!empty($cash["par_name"])'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</if>{$cash['name']}</td>
+                <td align="center"  class="edit" cid ="{$cash['id']}" aid ="" fd='money'>{$cash['cash']['money']}</td>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td align="center"></td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+    
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByGuanXianTime(){
+	var start = $( "#choose_time" ).val();
+        var url   = "Manage/xianjin/date/"+start;
+        
+	window.location.href="__APP__/"+url;
+    }
+    function chooseTime(){
+        var begintime_ms = Date.parse(new Date($.trim($("#start_time").val())));
+        var endtime_ms = Date.parse(new Date($.trim($("#stop_time").val())));
+           if(!begintime_ms || !endtime_ms){
+             popup.error("请选择时间段");
+                return false;
+        }
+//        alert(begintime_ms);
+        endtime_ms += 24*60*60*1000;
+        if(endtime_ms-begintime_ms>6*30*24*60*60*1000){
+                popup.error("一次最多可查询6个月的数据！");
+                return false;
+        }
+        if(begintime_ms > endtime_ms){
+                popup.error("开始时间不能小于结束时间");
+                return false;
+        }
+        var begin = $("#start_time").val();
+        var end = $("#stop_time").val()
+        var urls   = "Manage/historyXianjin/sdate/"+begin+"/edate/"+end;
+        window.location.href="__APP__/"+urls;
+    }
+    $(document).ready(function(){    
+        var xiaoshoushangp = $("#2").children("td").eq(2).html();
+        var shoudaodeshuifei = $("#3").children("td").eq(2).html();
+        var shoudaodeqita = $("#4").children("td").eq(2).html();
+        var liuru1 = (xiaoshoushangp*1 + shoudaodeshuifei*1 + shoudaodeqita*1).toFixed(2);
+        $("#5").children("td").eq(2).html(liuru1);//计算出现金流入小计1的值 
+        
+        var goumaishangp = $("#6").children("td").eq(2).html();
+        var zhifuzhigong = $("#7").children("td").eq(2).html();
+        var zhifushuifei = $("#8").children("td").eq(2).html();
+        var zhifujingying = $("#9").children("td").eq(2).html();
+        var liuchu1 = (goumaishangp*1 + zhifuzhigong*1 + zhifushuifei*1 + zhifujingying*1).toFixed(2);
+        $("#10").children("td").eq(2).html(liuchu1);//计算出现金流出小计1的值 
+        
+        var jingyingjinge = (liuru1 - liuchu1).toFixed(2);
+        $("#11").children("td").eq(2).html(jingyingjinge);//计算出经营活动产生的现金流量净额的值 
+        
+        var shouhuitouzi = $("#13").children("td").eq(2).html();
+        var qudetouzi = $("#14").children("td").eq(2).html();
+        var chuzhiguding = $("#15").children("td").eq(2).html();
+        var shoudaoqita = $("#16").children("td").eq(2).html();
+        var liuru2 = (shouhuitouzi*1 + qudetouzi*1 + chuzhiguding*1 + shoudaoqita*1).toFixed(2);
+        $("#17").children("td").eq(2).html(liuru2);//计算出现金流入小计2的值 
+        
+        var goujiangudingzichan = $("#18").children("td").eq(2).html();
+        var touzisuozhifu = $("#19").children("td").eq(2).html();
+        var zhifutouzi = $("#20").children("td").eq(2).html();
+        var liuchu2 = (goujiangudingzichan*1 + touzisuozhifu*1 + zhifutouzi*1).toFixed(2);
+        $("#21").children("td").eq(2).html(liuchu2);//计算出现金流出小计2的值 
+        
+        var touzihuodong = (liuru2 - liuchu2).toFixed(2);
+        $("#22").children("td").eq(2).html(touzihuodong);//计算出投资活动产生的现金流量净额的值 
+        
+        var xiyintouzi = $("#24").children("td").eq(2).html();
+        var jiekuan = $("#25").children("td").eq(2).html();
+        var shoudaochouzi = $("#26").children("td").eq(2).html();
+        var liuru3 = (xiyintouzi*1 + jiekuan*1 + shoudaochouzi*1).toFixed(2);
+        $("#27").children("td").eq(2).html(liuru3);//计算出现金流入小计3的值 
+        
+        var changhuanzhaiwu = $("#28").children("td").eq(2).html();
+        var fenpeiguli = $("#29").children("td").eq(2).html();
+        var zhifuchouzi = $("#30").children("td").eq(2).html();
+        var liuchu3 = (changhuanzhaiwu*1 + fenpeiguli*1 + zhifuchouzi*1).toFixed(2);
+        $("#31").children("td").eq(2).html(liuchu3);//计算出现金流入小计3的值
+        
+        var chouzijinge = (liuru3 - liuchu3).toFixed(2);
+        $("#32").children("td").eq(2).html(chouzijinge);//计算出筹资活动产生的现金流量净额的值 
+        
+        var huilu = $("#34").children("td").eq(2).html();
+        var wu = (jingyingjinge*1 + touzihuodong*1 + chouzijinge*1 + huilu*1).toFixed(2);
+        $("#35").children("td").eq(2).html(wu);//计算出现金及现金等价物净增加额的值 
+        
+        //内部结构
+        var D4 = ((xiaoshoushangp/liuru1)*100).toFixed(2)+'%';
+        $("#2").children("td").eq(3).html(D4);
+        var D5 = ((shoudaodeshuifei/liuru1)*100).toFixed(2)+'%';
+        $("#3").children("td").eq(3).html(D5);
+        var D6 = ((shoudaodeqita/liuru1)*100).toFixed(2)+'%';
+        $("#4").children("td").eq(3).html(D6);
+        var D7 = ((liuru1/liuru1)*100).toFixed(2)+'%';
+        $("#5").children("td").eq(3).html(D7);
+        
+        var D8 = ((goumaishangp/liuchu1)*100).toFixed(2)+'%';
+        $("#6").children("td").eq(3).html(D8);
+        var D9 = ((zhifuzhigong/liuchu1)*100).toFixed(2)+'%';
+        $("#7").children("td").eq(3).html(D9);
+        var D10 = ((zhifushuifei/liuchu1)*100).toFixed(2)+'%';
+        $("#8").children("td").eq(3).html(D10);
+        var D11 = ((zhifujingying/liuchu1)*100).toFixed(2)+'%';
+        $("#9").children("td").eq(3).html(D11);
+        var D12 = ((liuchu1/liuchu1)*100).toFixed(2)+'%';
+        $("#10").children("td").eq(3).html(D12);
+        
+        var D15 = ((shouhuitouzi/liuru2)*100).toFixed(2)+'%';
+        $("#13").children("td").eq(3).html(D15);
+        var D16 = ((qudetouzi/liuru2)*100).toFixed(2)+'%';
+        $("#14").children("td").eq(3).html(D16);
+        var D17 = ((chuzhiguding/liuru2)*100).toFixed(2)+'%';
+        $("#15").children("td").eq(3).html(D17);
+        var D18 = ((shoudaoqita/liuru2)*100).toFixed(2)+'%';
+        $("#16").children("td").eq(3).html(D18);
+        var D19 = ((liuru2/liuru2)*100).toFixed(2)+'%';
+        $("#17").children("td").eq(3).html(D19);
+        
+        var D20 = ((goujiangudingzichan/liuchu2)*100).toFixed(2)+'%';
+        $("#18").children("td").eq(3).html(D20);
+        var D21 = ((touzisuozhifu/liuchu2)*100).toFixed(2)+'%';
+        $("#19").children("td").eq(3).html(D21);
+        var D22 = ((zhifutouzi/liuchu2)*100).toFixed(2)+'%';
+        $("#20").children("td").eq(3).html(D22);
+        var D23 = ((liuchu2/liuchu2)*100).toFixed(2)+'%';
+        $("#21").children("td").eq(3).html(D23);
+        
+        var D26 = ((xiyintouzi/liuru3)*100).toFixed(2)+'%';
+        $("#24").children("td").eq(3).html(D26);
+        var D27 = ((jiekuan/liuru3)*100).toFixed(2)+'%';
+        $("#25").children("td").eq(3).html(D27);
+        var D28 = ((shoudaochouzi/liuru3)*100).toFixed(2)+'%';
+        $("#26").children("td").eq(3).html(D28);
+        var D29 = ((liuru3/liuru3)*100).toFixed(2)+'%';
+        $("#27").children("td").eq(3).html(D29);
+        
+        var D30 = ((changhuanzhaiwu/liuchu3)*100).toFixed(2)+'%';
+        $("#28").children("td").eq(3).html(D30);
+        var D31 = ((fenpeiguli/liuchu3)*100).toFixed(2)+'%';
+        $("#29").children("td").eq(3).html(D31);
+        var D32 = ((zhifuchouzi/liuchu3)*100).toFixed(2)+'%';
+        $("#30").children("td").eq(3).html(D32);
+        var D33 = ((liuchu3/liuchu3)*100).toFixed(2)+'%';
+        $("#31").children("td").eq(3).html(D33);
+        
+        //流入结构
+        var ji1 = liuru1*1 + liuru2*1 + liuru3*1;
+        var E7 = ((liuru1/ji1)*100).toFixed(2)+'%';
+        $("#5").children("td").eq(4).html(E7);
+        
+        
+        var E19 = ((liuru2/ji1)*100).toFixed(2)+'%';
+        $("#17").children("td").eq(4).html(E19);
+        
+        var E29 = ((liuru3/ji1)*100).toFixed(2)+'%';
+        $("#27").children("td").eq(4).html(E29);
+        
+        //流出结构
+        var ji2 = liuchu1*1 + liuchu2*1 + liuchu3*1;
+        var F12 = ((liuchu1/ji2)*100).toFixed(2)+'%';
+        $("#10").children("td").eq(5).html(F12);
+        
+        var F23 = ((liuchu2/ji2)*100).toFixed(2)+'%';
+        $("#21").children("td").eq(5).html(F23);
+        
+        var F33 = ((liuchu3/ji2)*100).toFixed(2)+'%';
+        $("#31").children("td").eq(5).html(F33);
+        
+        //流入流出比
+        var G12 = ((liuru1/liuchu1)*100).toFixed(2)+'%';
+        $("#10").children("td").eq(6).html(G12);
+        
+        var G23 = ((liuru2/liuchu2)*100).toFixed(2)+'%';
+        $("#21").children("td").eq(6).html(G23);
+        
+        var G33 = ((liuru3/liuchu3)*100).toFixed(2)+'%';
+        $("#31").children("td").eq(6).html(G33);
+        
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="xianjin.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        popup.success('管理现金流量表的数据生成中！请稍候...');
+        setTimeout(function(){
+            popup.close("asyncbox_success");
+        },5000);
+        $.post("{:U('Manage/isExistMflow')}",{'date':b},function(data){
+            if(data==0){
+                //存在就修改数据
+                $("table tr:gt(0)").each(function(i){
+                    var mcId = $(this).children("td:eq(0)").text();
+                    var mcName = $(this).children("td:eq(1)").text();
+                    var mcMoney = $(this).children("td:eq(2)").text();
+                    var mcInside = $(this).children("td:eq(3)").text();
+                    var mcInto = $(this).children("td:eq(4)").text();
+                    var mcOutof = $(this).children("td:eq(5)").text();
+                    var mcInout = $(this).children("td:eq(6)").text();
+                    $.post("{:U('Manage/editMflow')}",{'mc_id':mcId,'name':mcName,'money':mcMoney,'inside':mcInside,'into':mcInto,'outof':mcOutof,'in_out':mcInout,'date':b},function(data){
+                        
+                    });
+                });
+            }
+            if(data==1){
+                //不存在就添加数据
+                $("table tr:gt(0)").each(function(i){
+                    var mcId = $(this).children("td:eq(0)").text();
+                    var mcName = $(this).children("td:eq(1)").text();
+                    var mcMoney = $(this).children("td:eq(2)").text();
+                    var mcInside = $(this).children("td:eq(3)").text();
+                    var mcInto = $(this).children("td:eq(4)").text();
+                    var mcOutof = $(this).children("td:eq(5)").text();
+                    var mcInout = $(this).children("td:eq(6)").text();
+                    $.post("{:U('Manage/addMflow')}",{'mc_id':mcId,'name':mcName,'money':mcMoney,'inside':mcInside,'into':mcInto,'outof':mcOutof,'in_out':mcInout,'date':b},function(data){
+                        
+                    });
+                });
+            } 
+        });
+        
+    });  
+</script>

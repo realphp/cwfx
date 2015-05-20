@@ -1,0 +1,37 @@
+<div class="Item hr">
+    <span class="fr">现有管理员<b>{$rows_count}</b>位</span>
+    <div class="current">成员列表</div>
+</div>
+<form>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+        <thead>
+            <tr>
+                <td>公司名</td>
+                <td>用户名</td>
+                <td>真实姓名</td>
+                <td>联系方式</td>
+                <td>角色</td>
+                <td>到期时间</td>
+<!--                <td>操作</td>-->
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="admins" id="admin">
+            <tr align="center">
+                <td>{$admin['name']}</td>
+                <td>{$admin['username']}</td>
+                <td>{$admin['realname']}</td>
+                <td>{$admin['mobile']}</td>
+                <td>{$admin['role']['name']}</td>
+                <td>{$admin['enddate']}</td>
+                <!--<td>{:date('Y-m-d H:i:s', $admin['created_at'])}</td>-->
+<!--                <td><if condition="$admin['is_super'] && !$_SESSION[C('ADMIN_AUTH_KEY')]">---<else/>[ <a href="{:U('Admins/edit', array('id' => $admin['id']))}">编辑</a> ]</if></td>-->
+            </tr>
+            </volist>
+        </tbody>
+    </table>
+</form>
+
+<div class="page">
+    {$page}
+</div>

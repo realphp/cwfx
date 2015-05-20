@@ -1,0 +1,62 @@
+.j_btn{     
+    background: none repeat scroll 0 0 #1b75b6;
+    border: 1px solid #106bab;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: inherit;
+    font-size: 100%;
+    letter-spacing: 5px;
+    line-height: normal;
+    margin-left: 10px;
+    min-width: 80px;
+    overflow: visible;
+    padding: 4px 5px 4px 10px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.on{background-color: #27a3fc; border: 1px solid #27a3fc;}
+
+input {
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #ccc;
+    /*border-radius: 6px;*/
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1) inset;
+    /*color: #444;*/
+    font-family: "PT Sans",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    height: 25px;
+    /*margin-top: 5px;*/
+    padding: 0 15px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease 0s;
+    width: 50px;
+    text-align: center;
+}
+.btn {
+    background: none repeat scroll 0 0 #1b75b6;
+    border: 1px solid #106bab;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: inherit;
+    font-size: 100%;
+    letter-spacing: 5px;
+    line-height: normal;
+    margin-left: 10px;
+    min-width: 80px;
+    overflow: visible;
+    padding: 4px 5px 4px 10px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.table { border-collapse: separate;}
+.table tr td{padding: 1px;text-align: center;}

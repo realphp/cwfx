@@ -1,0 +1,112 @@
+<div class="Item hr">
+    <div class="current">客户搜索</div>
+</div>
+<!--<form action="" method="post">
+    <table  width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+        <tbody>
+            <tr>
+                <td class="tips">按项目名称</td>
+                <td><input type="text" class="input" size="20" name="name" value="{$name}" /></td>
+                <td  class="tips">按项目所属区域</td>
+                <td><input type="text" class="input" size="20" name="area" value="{$area}"/></td>
+            </tr>
+            <tr>
+                <td  class="tips">按项目地址</td>
+                <td><input type="text" class="input" size="20" name="address" value="{$address}"/></td>
+                <td class="tips">按销售人员</td>
+                <td>
+                    <select name="addperson">
+                        <option>不限</option>
+                        <volist name="list" id="v">
+                            <option <if condition="$addperson eq $v['username']">selected</if>>{$v.username}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td  class="tips">按项目保留状态</td>
+                <td>
+                    <select name="mark">
+                        <option value="-1">不限</option>
+                        <option value="0" <if condition="$mark eq 0">selected</if>>释放</option>
+                        <option value="1" <if condition="$mark eq 1">selected</if>>保留</option>
+                    </select>
+                </td>
+                <td class="tips">按项目合作状态</td>
+                <td>
+                    <select name="status">
+                        <option value="-1">不限</option>
+                        <option value="1" <if condition="$status eq 1">selected</if>>已合作</option>
+                        <option value="0" <if condition="$status eq 0">selected</if>>未合作</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td  class="tips">按项目类别</td>
+                <td>
+                    <select name="level">
+                        <option value="-1">不限</option>
+                        <option value="0" <if condition="$level eq 0">selected</if>>普通客户</option>
+                        <option value="1" <if condition="$level eq 1">selected</if>>地块客户</option>
+                        <option value="2" <if condition="$level eq 2">selected</if>>集团客户</option>
+                    </select>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align:center;"><button class="btn submit">查询</button></td>
+            </tr>
+        </tbody>
+    </table>
+</form>-->
+<div class="Item hr">
+    <span class="fr">
+        <a class="btn submit" href="{:U('Admins/excel')}">excel导出数据</a>
+        现有管理员<b>{$rows_count}</b>位</span>
+    <div class="current">管理员列表</div>
+</div>
+<form>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+        <thead>
+            <tr>
+                <td>客户编号</td>
+                <td>公司</td>
+                <td>用户名</td>
+                <td>真实姓名</td>
+                <td>职位</td>
+                <td>联系方式</td>
+                <td>订购金额</td>
+                <td>开户时间</td>
+                <td>到期时间</td>
+                <td>设置子账户数量</td>
+                <td>备注</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="admins" id="admin">
+            <tr align="center">
+                <td>{$admin['cnum']}</td>
+                <td>{$admin['name']}</td>
+                <td>{$admin['username']}</td>
+                <td>{$admin['realname']}</td>
+                <td>{$admin['position']}</td>
+                <td>{$admin['mobile']}</td>
+                <!-- <td><if condition="$admin['is_active'] eq 1">已启用<else/>已禁用</if></td> -->
+                
+                <td>{$admin['price']}</td>
+                <td>{$admin['created_at']|date="Y-m-d",###}</td>
+                <td>{$admin['enddate']}</td>
+                <td>{$admin['childnum']}</td>
+                <td>{$admin['remark']}</td>
+                <td><if condition="$admin['is_super'] && !$_SESSION[C('ADMIN_AUTH_KEY')]">---<else/>[ <a href="{:U('Admins/edit', array('id' => $admin['id']))}">编辑</a> ]</if></td>
+            </tr>
+            </volist>
+        </tbody>
+    </table>
+</form>
+
+<div class="page">
+    {$page}
+</div>

@@ -1,0 +1,35 @@
+<include file="Public:header"/>
+<script>
+    var url = '{:U("Index/ajaxreturn")}';
+</script>
+<div class="all-container" style="display:block;">
+    <div class="head-top-logo">
+        <a class="return" href="javascript:history.go(-1);"></a>
+        <a href="#" class="logo">股东回报率</a>
+        <a class="member" id="open_right"></a>		
+    </div>
+    <script src="__PUBLIC__/js/biao/jscharts.js"></script>
+
+    <center>
+        <div style="background-color: #fff;width: 320px;height: 60px;margin-top: 30px;padding-top: 10px;">
+            <a class="j_btn" href="javascript:void(0)" onClick="selectmonth(1, this, url, 1)">上月</a>
+            <a class="j_btn on"  href="javascript:void(0)" onClick="selectmonth(2, this, url, 1)">本月</a>
+        </div>
+        <div class="pp-container" id="graph" style="background-color: #fff;width: 320px;">
+        </div>
+    </center>
+
+
+    <div class="bottom-table-zw"></div>
+</div>    
+
+
+<include file="Public:right"/>
+<include file="Public:footer"/>
+
+<script type="text/javascript">
+    var month = {$result['month']};
+            var lastMonth = {$result['lastMonth']};
+            var target = {$result['target']};
+    myChart(month, lastMonth, target);
+</script>

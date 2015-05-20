@@ -1,0 +1,140 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="choose_time" id="choose_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10">
+        <a class="btn submit" onClick="filterByHisXjTime()">查询</a>
+        <a class="btn submit explode" href="javascript:void(0);">导出</a>
+        日期：<input id="start_time" class=" time input" type="text" value="{$_GET['sdate']}" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text"  value="{$_GET['edate']}" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>
+    </span>
+    <div class="current">管理现金流量表</div>
+</div>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td width="30%">名称</td>
+                <script type="text/javascript">
+                    var arr=[];
+                </script>
+                <volist name="months" id="month">
+                <script type="text/javascript">
+                    arr.push('{$month}');
+                </script>
+                <td>{$month}</td>
+                </volist>
+<!--                <td>合计</td>-->
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="cashs" id="cash">
+            <tr  id="{$cash['id']}" >
+                <td><if condition='!empty($cash["par_name"])'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</if>{$cash['name']}</td>
+                <volist name="months" id="month">    
+                    <td align="center" id ="{$month}_{$cash['id']}"  class="edit" cid ="{$cash['id']}" aid ="" fd='money'>{$cash[$month]['cash']['money']}</td>
+                </volist>
+<!--                <td align="center">合计</td>-->
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+    
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByHisXjTime(){
+	var start = $( "#choose_time" ).val();
+        var url   = "Manage/xianjin/date/"+start;
+        
+	window.location.href="__APP__/"+url;
+    }
+    function chooseTime(){
+        var begintime_ms = Date.parse(new Date($.trim($("#start_time").val())));
+        var endtime_ms = Date.parse(new Date($.trim($("#stop_time").val())));
+//        alert(begintime_ms);
+        endtime_ms += 24*60*60*1000;
+        if(endtime_ms-begintime_ms>6*30*24*60*60*1000){
+                popup.error("一次最多可查询6个月的数据！");
+                return false;
+        }
+        if(begintime_ms > endtime_ms){
+                popup.error("开始时间不能小于结束时间");
+                return false;
+        }
+        var begin = $("#start_time").val();
+        var end = $("#stop_time").val()
+        var urls   = "Manage/historyXianjin/sdate/"+begin+"/edate/"+end;
+        window.location.href="__APP__/"+urls;
+    }
+    $(document).ready(function(){  
+        $.each(arr, function(i,val){
+            var xiaoshoushangp = $("#"+val+"_2").html();
+            var shoudaodeshuifei = $("#"+val+"_3").html();
+            var shoudaodeqita = $("#"+val+"_4").html();
+            var liuru1 = (xiaoshoushangp*1 + shoudaodeshuifei*1 + shoudaodeqita*1).toFixed(2);
+            $("#"+val+"_5").html(liuru1);//计算出现金流入小计1的值 
+
+            var goumaishangp = $("#"+val+"_6").html();
+            var zhifuzhigong = $("#"+val+"_7").html();
+            var zhifushuifei = $("#"+val+"_8").html();
+            var zhifujingying = $("#"+val+"_9").html();
+            var liuchu1 = (goumaishangp*1 + zhifuzhigong*1 + zhifushuifei*1 + zhifujingying*1).toFixed(2);
+            $("#"+val+"_10").html(liuchu1);//计算出现金流出小计1的值 
+
+            var jingyingjinge = (liuru1 - liuchu1).toFixed(2);
+            $("#"+val+"_11").html(jingyingjinge);//计算出经营活动产生的现金流量净额的值 
+
+            var shouhuitouzi = $("#"+val+"_13").html();
+            var qudetouzi = $("#"+val+"_14").html();
+            var chuzhiguding = $("#"+val+"_15").html();
+            var shoudaoqita = $("#"+val+"_16").html();
+            var liuru2 = (shouhuitouzi*1 + qudetouzi*1 + chuzhiguding*1 + shoudaoqita*1).toFixed(2);
+            $("#"+val+"_17").html(liuru2);//计算出现金流入小计2的值 
+
+            var goujiangudingzichan = $("#"+val+"_18").html();
+            var touzisuozhifu = $("#"+val+"_19").html();
+            var zhifutouzi = $("#"+val+"_20").html();
+            var liuchu2 = (goujiangudingzichan*1 + touzisuozhifu*1 + zhifutouzi*1).toFixed(2);
+            $("#"+val+"_21").html(liuchu2);//计算出现金流出小计2的值 
+
+            var touzihuodong = (liuru2 - liuchu2).toFixed(2);
+            $("#"+val+"_22").html(touzihuodong);//计算出投资活动产生的现金流量净额的值 
+
+            var xiyintouzi = $("#"+val+"_24").html();
+            var jiekuan = $("#"+val+"_25").html();
+            var shoudaochouzi = $("#"+val+"_26").html();
+            var liuru3 = (xiyintouzi*1 + jiekuan*1 + shoudaochouzi*1).toFixed(2);
+            $("#"+val+"_27").html(liuru3);//计算出现金流入小计3的值 
+
+            var changhuanzhaiwu = $("#"+val+"_28").html();
+            var fenpeiguli = $("#"+val+"_29").html();
+            var zhifuchouzi = $("#"+val+"_30").html();
+            var liuchu3 = (changhuanzhaiwu*1 + fenpeiguli*1 + zhifuchouzi*1).toFixed(2);
+            $("#"+val+"_31").html(liuchu3);//计算出现金流入小计3的值
+
+            var chouzijinge = (liuru3 - liuchu3).toFixed(2);
+            $("#"+val+"_32").html(chouzijinge);//计算出筹资活动产生的现金流量净额的值 
+
+            var huilu = $("#"+val+"_34").html();
+            var wu = (jingyingjinge*1 + touzihuodong*1 + chouzijinge*1 + huilu*1).toFixed(2);
+            $("#"+val+"_35").html(wu);//计算出现金及现金等价物净增加额的值 
+        });
+    });  
+    //导出按钮
+    $(function(){
+        $(".explode").on("click",function(){
+            var url = window.location.href;
+            var str = '';
+            str = url.split("historyXianjin");
+            str = str[1].split("/");
+            var skip_url = 'Manage/excelHistoryXianjin';
+            for(var i = 0;i < str.length; i++){
+                skip_url += '/'+str[i]
+            }
+            location.href=skip_url;
+        });
+    });
+</script>

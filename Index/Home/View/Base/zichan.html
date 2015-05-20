@@ -1,0 +1,297 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByZiTime()">查询</a>
+        <!-- <a class="btn submit" href="{:U('Base/excelFuzhai')}">EXCEL导出数据</a> -->
+        <form id="form1" runat="server"  method="post" enctype="multipart/form-data" action="{:U('Base/upload')}" style="float: left;">  
+            请选择您要上传的文件：
+            <div>  
+                <input class="File1" id="File1" type="file" name="File1"/>  
+                <input class="uploadExcelDate" type="hidden" name="date" value="{$dateVal}"/>  
+                <input class="btn submit leading-in" type="submit" value="导入"/>  
+            </div>  
+        </form>
+        <script type="text/javascript">
+            $(document).ready(function(){ 
+                if(!$(".File1").val()){
+                    $(".leading-in").attr('disabled',true);
+                    $(".leading-in").css('background-color','#ccc');
+                    $(".leading-in").css('border','1px solid #ccc');
+                }
+                $(".File1").live('change',function(){ 
+                    var val = $(".File1").val();
+                    if(val != ''){
+                    $(".leading-in").attr('disabled',false);
+                    $(".leading-in").css('background-color','#1b75b6');
+                    $(".leading-in").css('border','1px solid #1b75b6');
+                    }else{
+                      $(".leading-in").attr('disabled',true);
+                      $(".leading-in").css('background-color','#ccc');
+                      $(".leading-in").css('border', '1px solid #ccc');
+                    }
+                });
+            });
+        </script>
+        
+        <if condition="($review eq 0)">
+            <a class="btn submit" onClick="reviewZichan()">审核</a>
+        <else/>
+            <a class="btn submit" onClick="cancelReviewZichan()">取消审核</a>
+        </if>
+        <a class="btn submit" onClick="delZichan()">清空数据</a>
+    </span>
+    <div class="current">标准资产负债表</div>
+</div>
+    <table id="dd" width="50%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>名称</td>
+                <td>行次</td>
+                <td>年初金额</td>
+                <td>期末金额</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr align="center" ><td>流动资产：</td><td></td><td></td><td></td></tr>    
+            <volist name="assets" id="asset">
+            <if condition='$i lt 15'>
+            <tr align="center" id="{$asset['rich']['id']}" <if condition='empty($asset["par_code"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <td>{$asset['id']}</td>
+                <td aid ="{$asset['id']}" fd='start_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['start_money']}</td>
+                <td aid ="{$asset['id']}" fd='end_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['end_money']}</td>
+            </tr>
+            </if>
+            </volist>
+            <tr align="center" ><td>长期投资：</td><td></td><td></td><td></td></tr>    
+            <volist name="assets" id="asset">
+            <if condition='($i gt 14) and ($i lt 19)'>
+            <tr align="center" id="{$asset['rich']['id']}" <if condition='empty($asset["par_code"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <td>{$asset['id']}</td>
+                <td aid ="{$asset['id']}" fd='start_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['start_money']}</td>
+                <td aid ="{$asset['id']}" fd='end_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['end_money']}</td>
+            </tr>
+            </if>
+            </volist>
+            <tr align="center" ><td>固定资产：</td><td></td><td></td><td></td></tr>    
+            <volist name="assets" id="asset">
+            <if condition='($i gt 18) and ($i lt 28)'>
+            <tr align="center" id="{$asset['rich']['id']}" <if condition='empty($asset["par_code"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <td>{$asset['id']}</td>
+                <td aid ="{$asset['id']}" fd='start_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['start_money']}</td>
+                <td aid ="{$asset['id']}" fd='end_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['end_money']}</td>
+            </tr>
+            </if>
+            </volist>
+            <tr align="center" ><td>无形资产以及其他资产：</td><td></td><td></td><td></td></tr>    
+            <volist name="assets" id="asset">
+            <if condition='($i gt 27) and ($i lt 36)'>
+            <tr align="center" id="{$asset['rich']['id']}" <if condition='empty($asset["par_code"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <td>{$asset['id']}</td>
+                <td aid ="{$asset['id']}" fd='start_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['start_money']}</td>
+                <td aid ="{$asset['id']}" fd='end_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['end_money']}</td>
+            </tr>
+            </if>
+            </volist>
+        </tbody>
+    </table>
+    <table width="50%" border="0" cellspacing="0" cellpadding="0" class="tab" style="float: left">
+        <thead>
+            <tr>
+                <td>名称</td>
+                <td>行次</td>
+                <td>年初金额</td>
+                <td>期末金额</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr align="center" ><td>流动负债：</td><td></td><td></td><td></td></tr>   
+            <volist name="assets" id="asset" >
+            <if condition='($i gt 35) and ($i lt 52)'>
+            <tr align="center" id="{$asset['rich']['id']}" <if condition='empty($asset["par_code"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <td>{$asset['id']}</td>
+                <td aid ="{$asset['id']}" fd='start_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['start_money']}</td>
+                <td aid ="{$asset['id']}" fd='end_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['end_money']}</td>
+            </tr>
+            </if>
+            </volist>
+            <tr align="center" ><td>长期负债：</td><td></td><td></td><td></td></tr>   
+            <volist name="assets" id="asset" >
+            <if condition='($i gt 51) and ($i lt 60)'>
+            <tr align="center" id="{$asset['rich']['id']}" <if condition='empty($asset["par_code"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <td>{$asset['id']}</td>
+                <td aid ="{$asset['id']}" fd='start_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['start_money']}</td>
+                <td aid ="{$asset['id']}" fd='end_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['end_money']}</td>
+            </tr>
+            </if>
+            </volist>
+            <tr align="center" ><td>所有者权益：</td><td></td><td></td><td></td></tr>   
+            <volist name="assets" id="asset" >
+            <if condition='$i gt 59'>
+            <tr align="center" id="{$asset['rich']['id']}" <if condition='empty($asset["par_code"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <td>{$asset['id']}</td>
+                <td aid ="{$asset['id']}" fd='start_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['start_money']}</td>
+                <td aid ="{$asset['id']}" fd='end_money' <if condition='($asset["rich"]["review"] eq 0)'>class="edit"</if> >{$asset['rich']['end_money']}</td>
+            </tr>
+            </if>
+            </volist>
+        </tbody>
+    </table>
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByZiTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Base/zichan/date/"+start;
+//            alert("__APP__/"+url);
+        
+	window.location.href="__APP__/"+url;
+    }
+    function delZichan(){
+        var mydate = $('.uploadExcelDate').val();
+        var gnl=confirm("你真的确定要删除吗?"); 
+        if (gnl==true){ 
+            $.post("{:U('Base/deleteZichan')}",{'date':mydate},function(data){
+                if(data==0){
+                    popup.success('清空资产负债表数据成功！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_success");
+                        location.reload();
+                    },2000);
+                }
+                if(data==1){
+                    popup.error('清空资产负债表数据失败！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_error");
+                        location.reload();
+                    },2000);
+                }
+            });
+        }else{ 
+            return false; 
+        } 
+	
+    }
+    function reviewZichan(){
+        var mydate = $('.uploadExcelDate').val();
+//        alert(mydate);
+	$.post("{:U('Base/zichanReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('审核资产负债表成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('审核资产负债表失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    function cancelReviewZichan(){
+        var mydate = $('.uploadExcelDate').val();
+	$.post("{:U('Base/zichanCancelReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('取消审核资产负债表成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('取消审核资产负债表失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    $(document).ready(function(){  
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="zichan.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        $(".edit").dblclick(function(){  
+            var inval=$(this).html();//获取当前点击td内容  
+            var infd=$(this).attr("fd");//获取当前点击td中的fd自定义属性值
+            var inaid=$(this).attr("aid");
+            var inid=$(this).parents().attr("id");//获取当前点击td父类tr的id  
+            if($(this).children("input").length>0){return false;}
+            $(this).html("<input id='edit"+infd+inid+"'name='rich["+infd+"]' value='"+inval+"'>");//双击以后当前td变成输入框，id定义为edit"+infd+inid+"为了避免重复，value为原内容  
+            //鼠标焦点失去后执行   
+            $("#edit"+infd+inid).focus().live("blur",function(){  
+                var editval=$(this).val();//获取更改内容  
+                $(this).parents("td").html(editval); //将点击的td中原内容改为输入的新内容
+                //如果id为空，就add
+                if(!editval){
+                    popup.alert('你没有填写数据！');
+                    return false;
+                }
+                if(!inid){
+                    $.post("{:U('Base/create')}",{'assets_id':inaid,fd:infd,val:editval,date:b},function(data){
+                        if(data==0){
+//                            popup.success('填写数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },200);
+                        }
+                        if(data==1){
+                            popup.error('填写数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }else{
+                    //如果id有值，就edit
+                    $.post("{:U('Base/update')}",{id:inid,'assets_id':inaid,fd:infd,val:editval},function(data){
+                        if(data==0){
+//                            popup.success('修改数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },200);
+                        }
+                        if(data==1){
+//                            popup.error('修改数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }
+//                popup.alert(inid);
+            });  
+             
+        });  
+  });  
+
+</script>

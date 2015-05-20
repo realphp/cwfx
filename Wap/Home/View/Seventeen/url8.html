@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+         <meta charset="utf-8">
+        <meta name="keywords" content="YTT在线教育,培训网,培训机构,培训课程,岗位职责,网络商学院,培训视频，史永翔利润管理" />
+        <meta name="description" content="YTT是一个面向全国所有老板，高管，企业经理人，财务总监，行政等，职场人士的在线学习及服务平台，培训课程免费体验，
+        内容覆盖了人力资源，生产管理，营销管理，电子商务，市场营销，财务管理，职业素养，综合管理等多个领域，为用户提供一个最便捷、成本最低、服务最好的经营管理学习平台" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>YTT 管理报表系统</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">        
+        <base href="" />
+        <!-- Le styles -->
+        <link href="__PUBLIC__/css/jquery-ui.min.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="__PUBLIC__/css/wap-layout.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="__PUBLIC__/css/wap-home.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="/image/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+        <!-- Scripts -->
+        <!--[if lt IE 9]><script type="text/javascript" src="/js/html5shiv.js"></script><![endif]-->
+        <!--[if lt IE 9]><script type="text/javascript" src="/js/respond.min.js"></script><![endif]-->
+        <script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
+        <script type="text/javascript" src="__PUBLIC__/js/base.js"></script>
+        <script type="text/javascript" src="__PUBLIC__/js/mobile.js"></script>
+        <script type="text/javascript" src="__PUBLIC__/js/jquery.form.js"></script>
+        <script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="__PUBLIC__/js/jquery-ui.min.js"></script>    
+    </head>
+    <body>
+        <div id="module_left" class="info-container" style="left:0px; display:none; width:0%; height:100%;">
+		<div class="head-top-logo">
+			<span class="logo">YTT史永翔商学院</span>		
+		</div>
+</div> 
+        <div class="all-container" style="display:block;">
+    <div class="head-top-logo">
+	<a class="return" href="{:U('Index/index')}"></a>
+			<a href="/m" class="logo">十七根戒尺</a>
+		<a class="member" id="open_right"></a>		
+</div>
+<script src="__PUBLIC__/js/biao/jscharts.js"></script>
+<center>
+    <style>
+*{margin:0;padding:0;list-style:none;}
+body{font-size:14px;}
+
+
+.nav{width:200px;height:30px;margin:20px auto;}
+.nav p{display:block;padding-left:10px;line-height:30px;border:1px solid #CCC;}
+.set{background:url(__PUBLIC__/image/wap/btn_2.png) 165px 10px no-repeat;}
+.select{background:url(__PUBLIC__/image/wap/btn_1.png) 165px 10px no-repeat;}
+.new{width:198px;position:absolute;border:1px solid #CCC;display:none;background: #fff;z-index:1000;}
+.nav ul li{line-height:30px;padding-left:10px;}
+.nav ul li:hover{background:#CCC;color:#FFF;}
+</style>
+
+
+    <div class="pp-container"  style="background-color: #fff;width: 320px;margin-top: 25px;padding-left: 0;padding-right: 0;">
+        <div class="nav" id="nav">
+            <p class="set">信用管理能力</p>
+            <ul class="new">
+                <volist name="seven" id="se">
+                    <li>{$se['name']}<input type="hidden" value="url{$se['id']}"/></li>
+                    
+                </volist>
+                
+            </ul>
+        </div>
+        <div id="graph">
+            
+        </div>
+<input type="hidden" id="yue8" value="{$yue8}"/>
+<input type="hidden" id="lei8" value="{$lei8}"/>      
+    </div>
+</center>
+
+<script type="text/javascript">
+        
+        var ms = Math.floor($("#yue8").val());
+        var ts = Math.floor($("#lei8").val());
+        
+        var myData = new Array(['当月实际值', ms], ['累计指标', ts]);
+	var colors = ['#2D6B96', '#9CCEF0'];
+	var myChart = new JSChart('graph', 'bar');
+	myChart.setDataArray(myData);
+	myChart.colorizeBars(colors);
+	myChart.setTitle('');
+	myChart.setTitleColor('#8E8E8E');
+	myChart.setAxisNameX('%');
+	myChart.setAxisNameY('');
+	myChart.setAxisColor('#C4C4C4');
+	myChart.setAxisNameFontSize(16);
+	myChart.setAxisNameColor('#999');
+	myChart.setAxisValuesColor('#777');
+	myChart.setAxisColor('#B5B5B5');
+	myChart.setAxisWidth(1);
+	myChart.setBarValuesColor('#2F6D99');
+	myChart.setBarOpacity(0.5);
+	myChart.setAxisPaddingTop(60);
+	myChart.setAxisPaddingBottom(40);
+	myChart.setAxisPaddingLeft(45);
+	myChart.setTitleFontSize(11);
+	myChart.setBarBorderWidth(0);
+	myChart.setBarSpacingRatio(50);
+	myChart.setBarOpacity(0.9);
+	myChart.setFlagRadius(6);
+	myChart.setTooltipOffset(3);
+	myChart.setSize(320, 321);
+	myChart.draw();
+</script>
+
+    <div class="bottom-table-zw"></div>
+   <a style="display:block" href="#" class="return-top"></a>
+    <a style="display:block" href="#" class="phone-top"></a>
+</div>        <a style="display:block" href="#" class="return-top"></a>
+<a style="display:block" href="tel:4000008884" class="phone-top"></a>
+     
+<div id="module_right" class="info-container" style="right: 0px; width: 100%; float: right; height: 700px; display: none;">
+    <div class="head-top-logo">
+        <a class="l-list-a" href="#"></a>
+            <span class="logo">YTT史永翔商学院</span>
+        <a id="close_right" class="member"></a>
+    </div>
+    <div class="pp-container">
+        <div class="right-personal-center">
+            <div class="avatar">
+                <img src="__PUBLIC__/image/wap/default_avatar.gif">
+            </div>
+            <div class="avatar">
+                <a class="name" href="#">{$Think.session.current_account.username}</a>
+            </div>
+            <dl>
+                <dt style=" border:none;">
+                    <a href="{:U('Public/logout')}">退出</a>
+                </dt>
+            </dl>
+        </div>
+    </div>
+</div>     
+
+	
+<div class="footer">
+	<p>版权所有©2015&nbsp;&nbsp;YTT史永翔商学院
+	<p>服务热线：400-000-8884</p>
+</div>
+<div style="height:56px"></div>
+  
+            </body>
+</html>
+<script type="text/javascript">
+$(function(){
+
+	$(".nav p").click(function(){
+		var ul=$(".new");
+		if(ul.css("display")=="none"){
+			ul.slideDown();
+		}else{
+			ul.slideUp();
+		}
+	});
+	
+	$(".set").click(function(){
+		var _name = $(this).attr("name");
+		if( $("[name="+_name+"]").length > 1 ){
+			$("[name="+_name+"]").removeClass("select");
+			$(this).addClass("select");
+		} else {
+			if( $(this).hasClass("select") ){
+				$(this).removeClass("select");
+			} else {
+				$(this).addClass("select");
+			}
+		}
+	});
+	
+	$(".nav li").click(function(){
+		var li=$(this).text();
+		$(".nav p").html(li);
+		$(".new").hide();
+		/*$(".set").css({background:'none'});*/
+		$("p").removeClass("select") ;
+                var ye = $(this).children("input:first").val();
+//                alert(ye);
+                var url   = "Seventeen/"+ye;
+//            alert("__APP__/"+url);
+        
+                window.location.href="__APP__/"+url;
+	});
+})
+</script>

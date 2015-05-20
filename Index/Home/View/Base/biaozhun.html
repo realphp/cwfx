@@ -1,0 +1,212 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByBiaoTime()">查询</a>
+         <!-- <a class="btn submit" href="{:U('Base/excelBiaozhun')}">EXCEL导出数据</a> -->
+        <form id="form1" runat="server"  method="post" enctype="multipart/form-data" action="{:U('Base/uploadBiaozhun')}" style="float: left;">  
+            请选择您要上传的文件：
+            <div>  
+                <input class="File1" id="File1" type="file" name="File1"/> 
+                <input class="uploadExcelDate" type="hidden" name="date" value="{$dateVal}"/>  
+                <input class="btn submit leading-in" type="submit" value="导入"/>  
+            </div>  
+        </form>
+       <script type="text/javascript">
+            $(document).ready(function(){ 
+                if(!$(".File1").val()){
+                    $(".leading-in").attr('disabled',true);
+                    $(".leading-in").css('background-color','#ccc');
+                    $(".leading-in").css('border','1px solid #ccc');
+                }
+                $(".File1").live('change',function(){ 
+                    var val = $(".File1").val();
+                    if(val != ''){
+                    $(".leading-in").attr('disabled',false);
+                    $(".leading-in").css('background-color','#1b75b6');
+                    $(".leading-in").css('border','1px solid #1b75b6');
+                    }else{
+                      $(".leading-in").attr('disabled',true);
+                      $(".leading-in").css('background-color','#ccc');
+                      $(".leading-in").css('border', '1px solid #ccc');
+                    }
+                });
+            });
+        </script>
+        <if condition="($review eq 0)">
+            <a class="btn submit" onClick="reviewBiaozhun()">审核</a>
+        <else/>
+            <a class="btn submit" onClick="cancelReviewBiaozhun()">取消审核</a>
+        </if>
+        <a class="btn submit" onClick="delBiaozhun()">清空数据</a>
+    </span>
+    <div class="current">标准损益表</div>
+</div>
+    <table id="dd" width="60%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>名称</td>
+                <td>本期发生额</td>
+                <td>累计金额</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="interests" id="interest">
+            <tr  id="{$interest['rate']['id']}" >
+                <td><if condition='!empty($interest["par_name"])'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</if>{$interest['name']}</td>
+                <td align="center" aid ="{$interest['id']}" fd='now_money' <if condition='($interest["rate"]["review"] eq 0)'>class="edit"</if> >{$interest['rate']['now_money']}</td>
+                <td align="center" aid ="{$interest['id']}" fd='sum_money' <if condition='($interest["rate"]["review"] eq 0)'>class="edit"</if> >{$interest['rate']['sum_money']}</td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+    
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByBiaoTime(){
+	var start = $( "#start_time" ).val();
+        var url1   = "Base/biaozhun/date/"+start;
+        
+	window.location.href="__APP__/"+url1;
+    }
+    function delBiaozhun(){
+        var mydate = $('.uploadExcelDate').val();
+        var gnl=confirm("你真的确定要删除吗?"); 
+        if (gnl==true){ 
+            $.post("{:U('Base/deleteBiaozhun')}",{'date':mydate},function(data){
+                if(data==0){
+                    popup.success('清空标准损益表数据成功！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_success");
+                        location.reload();
+                    },2000);
+                }
+                if(data==1){
+                    popup.error('清空标准损益表数据失败！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_error");
+                        location.reload();
+                    },2000);
+                }
+            });
+        }else{ 
+            return false; 
+        } 
+	
+    }
+    function reviewBiaozhun(){
+        var mydate = $('.uploadExcelDate').val();
+	$.post("{:U('Base/biaozhunReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('审核标准损益表成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('审核标准损益表失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    function cancelReviewBiaozhun(){
+        var mydate = $('.uploadExcelDate').val();
+	$.post("{:U('Base/biaozhunCancelReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('取消审核标准损益表成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('取消审核标准损益表失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    $(document).ready(function(){    
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="biaozhun.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        $(".edit").dblclick(function(){  
+            var inval=$(this).html();//获取当前点击td内容  
+            var infd=$(this).attr("fd");//获取当前点击td中的fd自定义属性值
+            var inaid=$(this).attr("aid");
+            var inid=$(this).parents().attr("id");//获取当前点击td父类tr的id  
+            if($(this).children("input").length>0){return false;}
+            $(this).html("<input id='edit"+infd+inid+"'name='rate["+infd+"]' value='"+inval+"'>");//双击以后当前td变成输入框，id定义为edit"+infd+inid+"为了避免重复，value为原内容  
+            //鼠标焦点失去后执行   
+            $("#edit"+infd+inid).focus().live("blur",function(){  
+                var editval=$(this).val();//获取更改内容  
+                $(this).parents("td").html(editval); //将点击的td中原内容改为输入的新内容
+                //如果id为空，就add
+                if(!editval){
+                    popup.alert('你没有填写数据！');
+                    return false;
+                }
+                if(!inid){
+                    $.post("{:U('Base/createRate')}",{'interest_id':inaid,fd:infd,val:editval,date:b},function(data){
+                        if(data==0){
+//                            popup.success('填写数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },2000);
+                        }
+                        if(data==1){
+                            popup.error('填写数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }else{
+                    //如果id有值，就edit
+                    $.post("{:U('Base/updateRate')}",{id:inid,'interest_id':inaid,fd:infd,val:editval},function(data){
+                        if(data==0){
+//                            popup.success('修改数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },2000);
+                        }
+                        if(data==1){
+//                            popup.error('修改数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }
+//                popup.alert(inid);
+            });  
+             
+        });  
+  });  
+</script>

@@ -1,0 +1,299 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByDuTime()">查询</a>
+<!--        日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>-->
+    </span>
+    <div class="current">杜邦分析法</div>
+</div>
+<table id="dd" width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+    <thead>
+        <tr>
+            <td>项目</td>
+            <td>当月实际值（%）</td>
+            <td>上月实际值（%）</td>
+            <td>当月目标值（%）</td>
+            <td style="display: none;"></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td align="center">股东回报率</td>
+            <td align="center">{$du['1']['lei']}</td>
+            <td align="center">{$oldGudong}</td>
+            <td align="center" class="edit" did ="{$dubang['0']['id']}" name='股东回报率'>{$dubang['0']['target']}</td>
+            <td style="display: none;">{$dubang['0']['id']}</td>
+        </tr>
+        <tr>
+            <td align="center">市场杠杆</td>
+            <td align="center">{$shichang}</td>
+            <td align="center">{$shichangLast}</td>
+            <td align="center" class="edit" did ="{$dubang['1']['id']}" name='市场杠杆'>{$dubang['1']['target']}</td>
+            <td style="display: none;">{$dubang['1']['id']}</td>
+        </tr>
+        <tr>
+            <td align="center">管理杠杆</td>
+            <td align="center">{$guanli}</td>
+            <td align="center">{$guanliLast}</td>
+            <td align="center" class="edit" did ="{$dubang['2']['id']}" name='管理杠杆'>{$dubang['2']['target']}</td>
+            <td style="display: none;">{$dubang['2']['id']}</td>
+        </tr>
+        <tr>
+            <td align="center">财务杠杆</td>
+            <td align="center">{$caiwu}</td>
+            <td align="center">{$caiwuLast}</td>
+            <td align="center" class="edit" did ="{$dubang['3']['id']}" name='财务杠杆'>{$dubang['3']['target']}</td>
+            <td style="display: none;">{$dubang['3']['id']}</td>
+        </tr>
+    </tbody>
+</table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table1">
+        <tr>
+            <th width="100">备注：</th>
+            <td>(1)图中的数据均以“%”表示</td>
+        </tr>
+    </table>
+<div class="dubang">
+    <div class="gudongLv">
+        <div class="gudongTop">
+            <div class="gudongName">股东回报率<br/><span class="kuohao">（ROE）</span></div>
+            <div class="gudongData">{$du['1']['lei']}</div>
+        </div>
+    </div>
+    <div class="oneLine">
+        <img src="__PUBLIC__/images/dubang/02-01.png"/>
+    </div>
+    <div class="threeGang">
+        <ul>
+            <li>
+                <div class="shichangGang">
+                    <div class="gudongName">市场杠杆<br/><span class="kuohao">（销售净利率）</span></div>
+                    <div class="gudongData">{$shichang}</div>
+                </div>
+            </li>
+            <li>
+                <div class="guanliGang">
+                    <div class="gudongName">管理杠杆<br/><span class="kuohao">（资产周转率）</span></div>
+                    <div class="gudongData">{$guanli}</div>
+                </div>
+            </li>
+            <li>
+                <div class="caiwuGang">
+                    <div class="gudongName">财务杠杆<br/><span class="kuohao">（权益乘数）</span></div>
+                    <div class="gudongData">{$caiwu}</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="twoLine">
+        <img src="__PUBLIC__/images/dubang/02-02.png"/>
+    </div>
+    <div class="sixteenGang">
+        <ul>
+            <li class="sixteenOne">
+                <div class="zhuying1">
+                    <div class="sixteenName1">主营业务质量</div>
+                    <div class="sixteenData">{$du['0']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">销售管理水平</div>
+                    <div class="sixteenData">{$du['2']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">成本管理水平</div>
+                    <div class="sixteenData">{$du['4']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName2">经营负担</div>
+                    <div class="sixteenData">{$du['3']['lei']}</div>
+                </div>
+            </li>
+            <li class="sixteenTwo">
+                <div class="zhuying1">
+                    <div class="sixteenName1">运营资产回报率</div>
+                    <div class="sixteenData">{$du['5']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">信用管理能力</div>
+                    <div class="sixteenData">{$du['7']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">销售管理质量</div>
+                    <div class="sixteenData">{$du['9']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName2">产销平衡</div>
+                    <div class="sixteenData">{$du['11']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">应付账款控制</div>
+                    <div class="sixteenData">{$du['8']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName3">固定资产的使用效率</div>
+                    <div class="sixteenData">{$du['12']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">净现金的效能</div>
+                    <div class="sixteenData">{$du['13']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">管理效率的质量</div>
+                    <div class="sixteenData">{$du['10']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName1">资产盈利能力</div>
+                    <div class="sixteenData">{$du['6']['lei']}</div>
+                </div>
+            </li>
+            <li class="sixteenThree">
+                <div class="zhuying1">
+                    <div class="sixteenName1">外部资产利用率</div>
+                    <div class="sixteenData">{$du['14']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName3">净现金对负债的承受率</div>
+                    <div class="sixteenData">{$du['16']['lei']}</div>
+                </div>
+                <div class="zhuying1">
+                    <div class="sixteenName3">流动资产对负债的承受率</div>
+                    <div class="sixteenData">{$du['15']['lei']}</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+    
+<style type="text/css">  
+.dubang{height: 420px;width: 1180px;line-height: 35px;border: 1px solid #444;border-radius: 5px;}
+.gudongLv{height: 111px;width: 1180px;}
+.gudongTop{height: 110px;width: 80px;border: 1px solid #444;border-radius: 5px;margin: 0 auto;}
+.gudongName{height: 70px;width: 80px;border-bottom: 1px solid #444;font-family: "微软雅黑";font-size: 14px;font-weight: bold;text-align: center;line-height: 35px;}
+.kuohao{font-family: "微软雅黑";font-size: 11px;text-align: center;line-height: 25px;}
+.gudongData{height: 40px;width: 80px;font-family: "微软雅黑";font-size: 14px;text-align: center;line-height: 40px;}
+.oneLine{height: 30px;width: 980px;}
+.threeGang{height: 111px;width: 1180px;}
+.threeGang ul li{height: 110px;width: 390px;float: left;}
+.shichangGang{border: 1px solid #444;border-radius: 5px;height: 110px;width: 80px;margin: 0 auto;}
+.guanliGang{border: 1px solid #444;border-radius: 5px;height: 110px;width: 80px;margin: 0 auto;}
+.caiwuGang{border: 1px solid #444;border-radius: 5px;height: 110px;width: 80px;margin: 0 auto;}
+.twoLine{height: 30px;width: 980px;}
+.sixteenGang{height: 120px;width: 1180px;}
+.sixteenGang ul li{height: 110px;float: left;}
+.sixteenGang .sixteenOne{width: 240px;margin-right: 30px;margin-left: 60px;}
+.sixteenTwo{width: 540px;margin-right: 30px;}
+.sixteenThree{width: 180px;}
+.zhuying1{border: 1px solid #444;border-radius: 5px;height: 110px;width: 55px;float:left;margin-left:3px; }
+.sixteenName1{height: 70px;width: 55px;border-bottom: 1px solid #444;font-family: "微软雅黑";font-size: 12px;font-weight: bold;text-align: center;line-height: 35px;}
+.sixteenName2{height: 70px;width: 55px;border-bottom: 1px solid #444;font-family: "微软雅黑";font-size: 12px;font-weight: bold;text-align: center;line-height: 70px;}
+.sixteenName3{height: 70px;width: 55px;border-bottom: 1px solid #444;font-family: "微软雅黑";font-size: 12px;font-weight: bold;text-align: center;line-height: 25px;}
+.sixteenData{height: 40px;width: 55px;font-family: "微软雅黑";font-size: 14px;text-align: center;line-height: 40px;}
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByDuTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Dubang/index/date/"+start;
+//            alert("__APP__/"+url);
+        
+	window.location.href="__APP__/"+url;
+    }
+    $(document).ready(function(){  
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="index.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        $(".edit").dblclick(function(){  
+            var inval=$(this).html();//获取当前点击td内容  
+            var infd=$(this).attr("name");//获取当前点击td中的fd自定义属性值
+            var inaid=$(this).attr("did");
+//            var inid=$(this).parents().attr("id");//获取当前点击td父类tr的id  
+            if($(this).children("input").length>0){return false;}
+            $(this).html("<input id='edit"+infd+"'name='dubang["+infd+"]' value='"+inval+"'>");//双击以后当前td变成输入框，id定义为edit"+infd+inid+"为了避免重复，value为原内容  
+            //鼠标焦点失去后执行   
+            $("#edit"+infd).focus().live("blur",function(){  
+                var editval=$(this).val();//获取更改内容  
+                $(this).parents("td").html(editval); //将点击的td中原内容改为输入的新内容
+                //如果id为空，就add
+                if(!editval){
+                    popup.alert('你没有填写数据！');
+                    return false;
+                }
+                if(!inaid){
+                    $.post("{:U('Dubang/create')}",{'id':inaid,name:infd,target:editval,'date':b},function(data){
+                        if(data==0){
+                            popup.success('填写数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },2000);
+                        }
+                        if(data==1){
+                            popup.error('填写数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }else{
+                    //如果id有值，就edit
+                    $.post("{:U('Dubang/update')}",{id:inaid,name:infd,target:editval,'date':b},function(data){
+                        if(data==0){
+                            popup.success('修改数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },2000);
+                        }
+                        if(data==1){
+                            popup.error('修改数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }
+//                popup.alert(inid);
+            });  
+             
+        }); 
+        popup.success('杜邦分析法的数据生成中！请稍候...');
+        setTimeout(function(){
+            popup.close("asyncbox_success");
+        },6000);
+        //循环修改
+        $.post("{:U('Dubang/isExistDubang')}",{'date':b},function(data){
+            if(data==0){
+                //存在就修改数据
+                $("table tr:gt(0)").each(function(i){
+                    var name = $(this).children("td:eq(0)").text();
+                    var month = $(this).children("td:eq(1)").text();
+                    var lastMonth = $(this).children("td:eq(2)").text();
+                    var target = $(this).children("td:eq(3)").text();
+                    var id = $(this).children("td:eq(4)").text();
+                    $.post("{:U('Dubang/editDubang')}",{'id':id,'name':name,'month':month,'lastMonth':lastMonth,'target':target,'date':b},function(data){
+                        
+                    });
+                });
+            } 
+        });
+        
+    });  
+</script>

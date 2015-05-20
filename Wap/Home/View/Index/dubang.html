@@ -1,0 +1,148 @@
+<include file="Public:header"/>
+
+
+<div class="all-container" style="display:block;">
+    <div class="head-top-logo">
+        <a class="return" href="{:U('index')}"></a>
+        <a href="#" class="logo">杜邦分析法</a>
+        <a class="member" id="open_right"></a>		
+    </div>
+    <center>
+        <div style="background-color: #fff;width: 320px;height: 60px;margin-top: 30px;padding-top: 10px;">
+            <a class="j_btn  <eq name='_GET["type"]' value='1'>on</eq> " href="{:U('dubang',array('type'=>1))}">上月</a>
+            <a class="j_btn <eq name='_GET["type"]' value=''>on</eq> "  href="{:U('dubang')}" >本月</a>
+        </div>
+        <div id="container" style="width: 320px;height:500px;"></div>
+    </center>
+<!--透明遮罩层-->
+<!--<div style="background: red;width:100%;height:370px;position: absolute;top:200px;filter:alpha(opacity=0);  -moz-opacity:0;  -khtml-opacity: 0;  opacity: 0; "></div>-->
+  <script>
+    //股东回报率的数值
+    var month1 = Number({$result['0']['month']});
+    var lastMonth1 = Number({$result['0']['lastMonth']});
+    var target1 = Number({$result['0']['target']}); 
+    //市场杠杆
+    var month2 = Number({$result['1']['month']});
+    var lastMonth2 = Number({$result['1']['lastMonth']});
+    var target2 = Number({$result['1']['target']}); 
+    //管理杠杆
+    var month3 = Number({$result['2']['month']});
+    var lastMonth3 = Number({$result['2']['lastMonth']});
+    var target3 = Number({$result['2']['target']}); 
+    //财务杠杆
+    var month4 = Number({$result['3']['month']});
+    var lastMonth4 = Number({$result['3']['lastMonth']});
+    var target4 = Number({$result['3']['target']}); 
+    
+   
+    //Javascript代码
+    $(function () {
+    highchartsxy (month1,lastMonth1,target1,month2,lastMonth2,target2,month3,lastMonth3,target3);
+ 
+});
+
+ function highchartsxy(month1,lastMonth1,target1,month2,lastMonth2,target2,month3,lastMonth3,target3){
+           $('#container').highcharts({
+        chart: {
+            zoomType: 'xy'
+        },
+        title: {
+            text: '杜邦分析',
+            margin: 80
+        },
+        subtitle: {
+            text: ''
+        },
+        credits: {
+            enabled:false
+        },
+        exporting: {
+            enabled:false
+        },
+        xAxis: [{
+            categories: ['当月实际值%', '上月实际值%', '当月目标值%']
+        }],
+        yAxis: [{ // Primary yAxis
+            labels: {
+                format: '{value}%',
+                style: {
+                    color: '#89A54E'
+                }
+            },
+            title: {
+                text: '',
+                style: {
+                    color: '#89A54E'
+                }
+            }
+        }, { // Secondary yAxis
+            title: {
+                text: '',
+                style: {
+                    color: '#4572A7'
+                }
+            },
+            labels: {
+                format: '{value}%',
+                style: {
+                    color: '#4572A7'
+                }
+            },
+            opposite: true
+        }],
+        tooltip: {
+            shared: true
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',//水平方向位置
+            x: 20,//距离x轴的距离
+            verticalAlign: 'top',//垂直方向位置
+            y: 15,//距离Y轴的距离
+            floating: true,
+            backgroundColor: '#FFFFFF'
+        },
+        series: [{
+            name: '财务杠杆',
+            color: '#4572A7',
+            type: 'column',
+            yAxis: 1,
+            data: [month4, lastMonth4, target4],
+            tooltip: {
+                valueSuffix: ' %'
+            }
+
+        }, {
+            name: '股东回报率',
+            color: '#89A54E',
+            type: 'spline',
+            data: [month1, lastMonth1, target1],
+            tooltip: {
+                valueSuffix: '%'
+            }
+        }, {
+            name: '市场杠杆',
+            color: '#444444',
+            type: 'spline',
+            data: [month2, lastMonth2, target2],
+            tooltip: {
+                valueSuffix: '%'
+            }
+        }, {
+            name: '管理杠杆',
+            color: '#44eeee',
+            type: 'spline',
+            data: [month3, lastMonth3, target3],
+            tooltip: {
+                valueSuffix: '%'
+            }
+        }]
+    });
+    }
+  </script>
+
+    <div class="bottom-table-zw"></div>
+</div>   
+
+<include file="Public:right"/>
+<include file="Public:footer"/>

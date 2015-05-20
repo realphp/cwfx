@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <title>{:C('SITE_TITLE')} - 利润管理系统</title>
+    <base href="__MODULE__" />
+    <!-- css -->
+    <include file="Common/stylesheets" />
+    <!-- js -->
+    <include file="Common/javascripts" />
+</head>
+
+<body>
+    <div class="wrap">
+        <!-- header -->
+        <include file="Common/header" />
+
+        <!-- main -->
+        <div class="mainBody">
+            <!-- left -->
+            <include file="Common/left" />
+
+            <!-- right -->
+            <div id="Right" style="height:365px;">
+                {__CONTENT__}
+            </div>
+        </div>
+        <div class="clear"></div>
+
+        <!-- footer -->
+        <include file="Common/footer" />
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    function filterByTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Base/xianjin/date/"+start;
+        
+	window.location.href="__APP__/"+url;
+    }
+</script>

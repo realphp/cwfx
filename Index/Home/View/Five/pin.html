@@ -1,0 +1,221 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByPinTime()">查询</a>
+<!--        日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>-->
+    </span>
+    <div class="current">销增销减</div>
+</div>
+    <table id="dd" width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>项目</td>
+                <td>单位</td>
+                <td>本年累计数</td>
+                <td>比率分析(%)</td>
+                <td>利润影响</td>
+                <td>预计现金流变化</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="pin" id="pi">
+            <tr id="{$pi['id']}" >
+                <td align="center" >{$pi['name']}</td>
+                <td align="center" ></td>
+                <td align="center"  class="edit"  fd='now_money'>
+                    {$pi['mrate']['sum_money']}
+                </td>
+                <td align="center" class="edit"  fd='sum_money'>
+                </td>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td style="display: none;">{$pi['id']}</td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+<input type="hidden" class="hidden_Data" value="{$sell}">
+<volist name="mrich" id="rich">
+    <input type="hidden" class="hidden_Data{$rich['ma_id']}" value="{$rich['end_money']}">
+</volist>
+
+<!--参数录入的现金费用比-->
+<input type="hidden" class="hidden_Data_cash" value="{$cashbi}">
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByPinTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Five/pin/date/"+start;
+//            alert("__APP__/"+url);
+        
+	window.location.href="__APP__/"+url;
+    }
+    $(document).ready(function(){ 
+        var sell = $(".hidden_Data").val();
+        var sellshu = sell/100;
+        var zyyw = $("#3").children("td").eq(2).html();
+//        alert(sellshu);
+        
+        //计算比率分析
+            var zyywbi = ((zyyw  / zyyw)*100).toFixed(2);
+            $("#3").children("td").eq(1).html(zyywbi);
+            $("#3").children("td").eq(3).html(zyywbi);
+            //变动费用
+            var bdcb = $("#4").children("td").eq(2).html();
+            var bdcbbi = ((bdcb  / zyyw)*100).toFixed(2);
+            $("#4").children("td").eq(1).html(bdcbbi);
+            $("#4").children("td").eq(3).html(bdcbbi);
+            //毛益
+            var maoy = $("#5").children("td").eq(2).html();
+            var maoybi = ((maoy  / zyyw)*100).toFixed(2);
+            $("#5").children("td").eq(1).html(maoybi);
+            $("#5").children("td").eq(3).html(maoybi);
+            //销售量
+            var xsldx = $("#7").children("td").eq(2).html();
+            var xsldxbi = ((xsldx  / zyyw)*100).toFixed(2);
+            $("#7").children("td").eq(1).html(xsldxbi);
+            $("#7").children("td").eq(3).html(xsldxbi);
+            //销售收入
+            var xsedx = $("#8").children("td").eq(2).html();
+            var xsedxbi = ((xsedx  / zyyw)*100).toFixed(2);
+            $("#8").children("td").eq(1).html(xsedxbi);
+            $("#8").children("td").eq(3).html(xsedxbi);
+            //经营贡献
+            var jygx = $("#9").children("td").eq(2).html();
+            var jygxbi = ((jygx  / zyyw)*100).toFixed(2);
+            $("#9").children("td").eq(1).html(jygxbi);
+            $("#9").children("td").eq(3).html(jygxbi);
+            //经营利润
+            var jylr = $("#14").children("td").eq(2).html();
+            var jylrbi = ((jylr  / zyyw)*100).toFixed(2);
+            $("#14").children("td").eq(1).html(jylrbi);
+            $("#14").children("td").eq(3).html(jylrbi);
+            //税前盈余
+            var sqyy = $("#16").children("td").eq(2).html();
+            var sqyybi = ((sqyy  / zyyw)*100).toFixed(2);
+            $("#16").children("td").eq(1).html(sqyybi);
+            $("#16").children("td").eq(3).html(sqyybi);
+            //本期净利润
+            var bqjlr = $("#19").children("td").eq(2).html();
+            var bqjlrbi = ((bqjlr  / zyyw)*100).toFixed(2);
+            $("#19").children("td").eq(1).html(bqjlrbi);
+            $("#19").children("td").eq(3).html(bqjlrbi);
+        
+        //计算利润影响
+        //主营业务收入
+        var zyywsr1 = $("#1").children("td").eq(2).html();
+        var lirun1 = (zyywsr1*sellshu).toFixed(2);
+        $("#1").children("td").eq(4).html(lirun1);
+        //营业税金及附加
+        var yysj2 = $("#2").children("td").eq(2).html();
+        var lirun2 = (yysj2*sellshu).toFixed(2);
+        $("#2").children("td").eq(4).html(lirun2);
+        //主营业务净收入
+        var lirun3 = (lirun1 - lirun2).toFixed(2);
+        $("#3").children("td").eq(4).html(lirun3);
+        //变动成本
+        var lirun4 = (bdcb*sellshu).toFixed(2);
+        $("#4").children("td").eq(4).html(lirun4);
+        //毛益
+        var lirun5 = (lirun3 - lirun4).toFixed(2);
+        $("#5").children("td").eq(4).html(lirun5);
+        //其中：销售量导向
+        var lirun7 = (xsldx*sellshu).toFixed(2);
+        $("#7").children("td").eq(4).html(lirun7);
+        //经营贡献
+        var lirun9 = (lirun5 - lirun7).toFixed(2);
+        $("#9").children("td").eq(4).html(lirun9);
+        //经营利润
+        $("#14").children("td").eq(4).html(lirun9);
+        //税前盈余
+        $("#16").children("td").eq(4).html(lirun9);
+        //本期净利润
+        $("#19").children("td").eq(4).html(lirun9);
+        
+        //预计现金流变化============================================================
+        //主营业务净收入
+        var mrich6 = $(".hidden_Data4").val();
+        var cashChange3 = (-((lirun3*mrich6) / zyyw)).toFixed(2);
+        $("#3").children("td").eq(5).html(cashChange3);
+        //变动成本
+        var mrich9 = $(".hidden_Data7").val();
+        var cashChange4 = (-((lirun4*mrich9) / bdcb)).toFixed(2);
+        $("#4").children("td").eq(5).html(cashChange4);
+        //毛益
+        var cashChange5 = (cashChange3*1 + cashChange4*1).toFixed(2);
+        $("#5").children("td").eq(5).html(cashChange5);
+        //变动营业费用  现金费用比
+        var cashbi = $(".hidden_Data_cash").val();
+        $("#6").children("td").eq(5).html(cashbi+'%');
+        //其中：销售量导向
+        var cashChange7 = ((-xsldx) * (cashbi/100) * sellshu).toFixed(2);
+        $("#7").children("td").eq(5).html(cashChange7);
+        //其中：销售收入导向
+        var cashChange8 = ((-xsedx) * (cashbi/100) * sellshu).toFixed(2);
+        $("#8").children("td").eq(5).html(cashChange8);
+        //三、经营贡献
+        var mrich20 = $(".hidden_Data18").val();
+        var cashChange9 = (((-cashChange4) * mrich20)/mrich9).toFixed(2);
+        $("#9").children("td").eq(5).html(cashChange9);
+        //四、经营利润
+        var cashChange14 = (cashChange5*1 + cashChange7*1 + cashChange8*1 + cashChange9*1).toFixed(2);
+        $("#14").children("td").eq(5).html(cashChange14);
+        //六、本期净利润
+        $("#19").children("td").eq(5).html(cashChange14);
+        
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="pin.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        $.post("{:U('Five/isExistPin')}",{'date':b},function(data){
+            if(data==0){
+                //存在就修改数据
+                $("table tr:gt(0)").each(function(i){
+                    var Cname = $(this).children("td:eq(0)").text();
+                    var Cunit = $(this).children("td:eq(1)").text();
+                    var Cmoney = $(this).children("td:eq(2)").text();
+                    var Cratio = $(this).children("td:eq(3)").text();
+                    var CprofitChange = $(this).children("td:eq(4)").text();
+                    var CcashChange = $(this).children("td:eq(5)").text();
+                    var Cpid = $(this).children("td:eq(6)").text();
+                    $.post("{:U('Five/editPin')}",{'name':Cname,'unit':Cunit,'sum_money':Cmoney,'ratio':Cratio,'profitChange':CprofitChange,'cashChange':CcashChange,'date':b,'pid':Cpid},function(data){
+                        
+                    });
+                });
+            }
+            if(data==1){
+                //不存在就添加数据
+                $("table tr:gt(0)").each(function(i){
+                    var Cname = $(this).children("td:eq(0)").text();
+                    var Cunit = $(this).children("td:eq(1)").text();
+                    var Cmoney = $(this).children("td:eq(2)").text();
+                    var Cratio = $(this).children("td:eq(3)").text();
+                    var CprofitChange = $(this).children("td:eq(4)").text();
+                    var CcashChange = $(this).children("td:eq(5)").text();
+                    var Cpid = $(this).children("td:eq(6)").text();
+                    $.post("{:U('Five/addPin')}",{'name':Cname,'unit':Cunit,'sum_money':Cmoney,'ratio':Cratio,'profitChange':CprofitChange,'cashChange':CcashChange,'date':b,'pid':Cpid},function(data){
+                        
+                    });
+                });
+            } 
+        });
+  });  
+</script>

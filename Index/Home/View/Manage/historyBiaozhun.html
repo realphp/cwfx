@@ -1,0 +1,142 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="choose_time" id="choose_time" class="time input" size="20"  onfocus="WdatePicker({dateFmt:'yyyy-MM'})">
+        <a class="btn submit" onClick="filterByHisBzTime()">确定</a>
+        <a class="btn submit explode" href="javascript:void(0);">导出</a>
+<!--        <form id="form1" style="float: left;" action="{:U('Manage/historyBiaozhun')}" enctype="multipart/form-data" method="post" runat="server">
+            日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <input class="btn submit" type="submit" value="查询历史">
+        </form>-->
+        日期：<input id="start_time" class=" time input" type="text"   value="{$_GET['sdate']}" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text"   value="{$_GET['edate']}" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>
+    </span>
+    <div class="current">管理标准损益表</div>
+</div>
+    <table id="dd" width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>名称</td>
+                <script type="text/javascript">
+                    var arr=[];
+                </script>
+                <volist name="months" id="month">
+                <script type="text/javascript">
+                    arr.push('{$month}');
+                </script>
+                    <input type="hidden" id='sell{$month}' value="{$sell1[$month]}"/>
+
+                    <input type="hidden" id='manager{$month}' value="{$manager1[$month]}"/>
+                <td>{$month}</td>
+                </volist>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="interests" id="interest">
+            <tr id="{$interest['id']}" >
+                <td>{$interest['name']}</td>
+                <volist name="months" id="month">
+                    
+                <td align="center"  class="edit" id ="{$month}_{$interest['id']}" fd='now_money'>
+                    <if condition='$interest["par_name"] eq "interest"'>{$interest[$month]['rate']['now_money']}
+                        <elseif condition='$interest["par_name"] eq "param"'/>{$interest[$month]['entry']['now_money']}
+                    </if>
+                </td>
+                </volist>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+
+
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByHisBzTime(){
+	var start = $( "#choose_time" ).val();
+        var url   = "Manage/biaozhun/date/"+start;
+        
+	window.location.href="__APP__/"+url;
+    }
+    function chooseTime(){
+        var begintime_ms = Date.parse(new Date($.trim($("#start_time").val())));
+        var endtime_ms = Date.parse(new Date($.trim($("#stop_time").val())));
+//        alert(begintime_ms);
+        endtime_ms += 24*60*60*1000;
+        if(endtime_ms-begintime_ms>6*30*24*60*60*1000){
+                popup.error("一次最多可查询6个月的数据！");
+                return false;
+        }
+        if(begintime_ms > endtime_ms){
+                popup.error("开始时间不能小于结束时间");
+                return false;
+        }
+        var begin = $("#start_time").val();
+        var end = $("#stop_time").val();
+        var urls   = "Manage/historyBiaozhun/sdate/"+begin+"/edate/"+end;
+        window.location.href="__APP__/"+urls;
+    }
+    $(document).ready(function(){ 
+        $.each(arr, function(i,val){      
+            var zhuyingjingshouru = $("#"+val+"_4").html();
+            var zhijiechengben = $("#"+val+"_5").html();
+            var maoyi = (zhuyingjingshouru - zhijiechengben).toFixed(2);
+            $("#"+val+"_6").html(maoyi);//计算出毛益的值  
+//            alert(zhuyingjingshouru);
+            var xiaoshoushouru = $("#"+val+"_8").html();
+            var xiaoshouliang = $("#"+val+"_9").html();
+            var bian = (xiaoshoushouru*1 + xiaoshouliang*1).toFixed(2);
+            $("#"+val+"_7").html(bian);//计算出变动营业费用的值
+
+            var jingyinggongxian = (maoyi - bian).toFixed(2);
+            $("#"+val+"_10").html(jingyinggongxian);//计算出经营贡献的值
+            
+            var sell1 = $("#sell"+val).val();
+            $("#"+val+"_12").html(sell1);//计算销售费用的值
+
+            var manager1 = $("#sell"+val).val();
+            $("#"+val+"_13").html(manager1);//计算管理费用的值
+
+            var xiaoshoufeiyong = $("#"+val+"_12").html();
+            var guanlifeiyong = $("#"+val+"_13").html();
+            var zhejiufeiyong = $("#"+val+"_14").html();
+            var gu = (xiaoshoufeiyong*1 + guanlifeiyong*1+ zhejiufeiyong*1).toFixed(2);
+            $("#"+val+"_11").html(gu);//计算固定营业费用的值
+
+            var yingyelirun = (jingyinggongxian - gu).toFixed(2);
+            $("#"+val+"_15").html(yingyelirun);//计算营业利润的值
+
+            var caiwu = $("#"+val+"_16").html();
+            var shuiqianyingyu = (yingyelirun - caiwu).toFixed(2);
+            $("#"+val+"_17").html(shuiqianyingyu);//计算税前盈余
+
+            var yingyewaishouzhi = $("#"+val+"_18").html();
+            var butieshouru = $("#"+val+"_19").html();
+            var touzishouyi = $("#"+val+"_20").html();
+            var gongyun = $("#"+val+"_21").html();
+            var suodeshui = $("#"+val+"_22").html();
+            var benqijinglirun = (shuiqianyingyu*1 + yingyewaishouzhi*1 + butieshouru*1 + touzishouyi*1 + gongyun*1 - suodeshui).toFixed(2);
+            $("#"+val+"_23").html(benqijinglirun);//计算税前盈余
+        });   
+    });  
+    
+    //导出按钮
+    $(function(){
+        $(".explode").on("click",function(){
+            var url = window.location.href;
+            var str = '';
+            str = url.split("historyBiaozhun");
+            str = str[1].split("/");
+            var skip_url = 'Manage/excelHistoryBiaozhun';
+            for(var i = 0;i < str.length; i++){
+                skip_url += '/'+str[i]
+            }
+            location.href=skip_url;
+        });
+    });
+</script>

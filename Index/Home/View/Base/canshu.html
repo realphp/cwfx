@@ -1,0 +1,302 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByCanTime()">查询</a>
+        <volist name="entrys" id="entry">
+            
+        </volist>
+        <?php if($entry){echo '<a class="btn submit"  onClick="showAdd()">添加</a>';}?>
+        <if condition="($review eq 0)">
+            <a class="btn submit"  onClick="showEdit()">修改</a>
+            <a class="btn submit" onClick="reviewCanshu()">审核</a>
+        <else/>
+            <a class="btn submit" onClick="cancelReviewCanshu()">取消审核</a>
+        </if>
+        <a class="btn submit" onClick="delCanshu()">清空数据</a>
+    </span>
+    <div class="current">参数录入</div>
+    <input class="uploadExcelDate" type="hidden" name="date" value="{$dateVal}"/>  
+</div>
+    <table id="dd" width="60%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>项目</td>
+                <td>本期发生额</td>
+                <td>本年累计数</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="entrys" id="entry">
+            <tr  id="{$entry['entry']['id']}" >
+                <td><if condition='!empty($entry["par_name"])'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</if>{$entry['name']}</td>
+                <td align="center" pid ="{$entry['id']}" fd='now_money'>
+                    <?php if($entry['id'] === '10' ){echo $entry['entry']['now_money'].'%';}else{
+                    echo $entry['entry']['now_money'];
+                    }?>
+                </td>
+                <td align="center" pid ="{$entry['id']}" fd='sum_money'>
+                    <?php if($entry['id'] === '10'){echo  $entry['entry']['sum_money'].'%';}else{
+                    echo $entry['entry']['sum_money'];
+                    }?>
+                </td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+    <link rel="stylesheet" href="__PUBLIC__/css/base.css"/>
+    
+    <div class="add_dialog" style="display:none;">
+        <div id="HTitle" class="dialog_title">添加数据</div>
+        <form id="add_data">
+            <input type="hidden" name="date" value="{$dateVal}"/>
+            <ul class="list">
+                <li style="margin:0 auto;font-size: 16px;height:20px;line-height: 20px;">
+                        <strong></strong>
+                        <div class="fl kong" >本期发生额</div>
+                        <div class="fl">本年累计数</div>
+                </li>
+                <li style="border-bottom:1px solid #ddd;">
+                        <strong>产品销售数量（个）  <font color="#ff0000">*</font></strong>
+                        <input type="hidden" name="pro[param_id]" value="1"/>
+                        <div class="fl kong" ><input type="text" name="pro[now_money]" value="" class="ipt nickname" /></div>
+                        <div class="fl"><input type="text" name="pro[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li style="border-bottom:1px solid #ddd;">
+                    <strong>直接成本  <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="zhi[param_id]" value="2"/>
+                    <div class="fl kong" ><input type="text" name="zhi[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="zhi[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li>
+                    <strong>1.以销售收入为导向的销售费用  <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="shou[param_id]" value="4"/>
+                    <div class="fl kong" ><input type="text" name="shou[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="shou[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li style="border-bottom:1px solid #ddd;">
+                    <strong>2.以销售量为导向的销售费用 <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="liang[param_id]" value="5"/>
+                    <div class="fl kong" ><input type="text" name="liang[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="liang[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li>
+                    <strong>2.销售部门的折旧费用  <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="sell[param_id]" value="8"/>
+                    <div class="fl kong" ><input type="text" name="sell[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="sell[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li style="border-bottom:1px solid #ddd;">
+                    <strong>3.管理部门的折旧费用 <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="man[param_id]" value="9"/>
+                    <div class="fl kong" ><input type="text" name="man[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="man[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li>
+                    <strong>现金费用比 <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="bi[param_id]" value="10"/>
+                    <div class="fl kong" ><input type="text" name="bi[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="bi[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li style="text-align:center;">
+                    <a class="btn submit"  onClick="addCanshu()">添加</a>
+                    <a class="btn submit"  onClick="hideAdd()">取消</a>
+                </li>
+            </ul>
+        </form>
+        <a id="HCloseBtn" onClick="hideAdd()" class="quxiao">
+            <span style="width:24px;height:24px;display:inline-block;">×</span>
+        </a>
+    </div>
+    
+    <div class="edit_dialog" style="display:none;">
+        <div id="HTitle" class="dialog_title">修改数据</div>
+        <form id="edit_data">
+            <ul class="list">
+                <li style="margin:0 auto;font-size: 16px;height:20px;line-height: 20px;">
+                        <strong></strong>
+                        <div class="fl kong" >本期发生额</div>
+                        <div class="fl">本年累计数</div>
+                </li>
+                
+                <volist name="entrys" id="entry">
+<!--                <tr  id="{$entry['entry']['id']}" >
+                    <td><if condition='!empty($entry["par_name"])'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</if>{$entry['name']}</td>
+                    <td align="center" pid ="{$entry['id']}" fd='now_money'
+                        <?php if($entry['id'] != 3 && $entry['id'] != 6 && $entry['id'] != 7){echo "class='edit'";}?>
+                        <?php if($entry['id'] == 3){echo "class='edit_biandong'";}?>
+                        >{$entry['entry']['now_money']}
+                    </td>
+                    <td align="center" pid ="{$entry['id']}" fd='sum_money'
+                        <?php if($entry['id'] != 3 && $entry['id'] != 6 && $entry['id'] != 7){echo "class='edit'";}?>
+                        >{$entry['entry']['sum_money']}
+                    </td>
+                </tr>-->
+                
+                <if condition="($entry['id'] neq '3') AND ($entry['id'] neq '6') AND ($entry['id'] neq '7')">
+                    <li style="border-bottom:1px solid #ddd;" >
+                        <strong>{$entry['name']} <font color="#ff0000">*</font></strong>
+                        <input type="hidden" name="{$entry['id']}[id]" value="{$entry['entry']['id']}"/>
+                        <div class="fl kong" >
+                            <input type="text" class="can{$entry['id']}" name="{$entry['id']}[now_money]" class="ipt nickname" value="{$entry['entry']['now_money']}"/>
+                        </div>
+                        <div class="fl">
+                            <input type="text" class="sum{$entry['id']}" name="{$entry['id']}[sum_money]" class="ipt nickname" value="{$entry['entry']['sum_money']}"/>
+                        </div>
+                </li>
+                </if>
+                
+                
+                </volist>
+                <li style="text-align:center;">
+                    <a class="btn submit"  onClick="editCanshu()">修改</a>
+                    <a class="btn submit"  onClick="hideEdit()">取消</a>
+                </li>
+            </ul>
+        </form>
+        <a id="HCloseBtn" onClick="hideEdit()" class="quxiao">
+            <span style="width:24px;height:24px;display:inline-block;">×</span>
+        </a>
+    </div>
+    
+    <div id="HOverlay" class=""></div>
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByCanTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Base/canshu/date/"+start;
+        
+	window.location.href="__APP__/"+url;
+    }
+    function delCanshu(){
+        var mydate = $('.uploadExcelDate').val();
+        var gnl=confirm("你真的确定要删除吗?"); 
+        if (gnl==true){ 
+            $.post("{:U('Base/deleteCanshu')}",{'date':mydate},function(data){
+                if(data==0){
+                    popup.success('清空参数录入数据成功！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_success");
+                        location.reload();
+                    },2000);
+                }
+                if(data==1){
+                    popup.error('清空参数录入数据失败！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_error");
+                        location.reload();
+                    },2000);
+                }
+            });
+        }else{ 
+            return false; 
+        } 
+	
+    }
+    function reviewCanshu(){
+        var mydate = $('.uploadExcelDate').val();
+	$.post("{:U('Base/canshuReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('审核参数录入成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('审核参数录入失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    function cancelReviewCanshu(){
+        var mydate = $('.uploadExcelDate').val();
+	$.post("{:U('Base/canshuCancelReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('取消审核参数录入成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('取消审核参数录入失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    function showAdd(){
+        $(".add_dialog").css('display','');
+        $("#HOverlay").addClass('hover');
+    }
+    
+    function showEdit(){
+        $(".edit_dialog").css('display','');
+        $("#HOverlay").addClass('hover');
+    }
+    function hideAdd(){
+        $(".add_dialog").css('display','none');
+        $("#HOverlay").removeClass('hover');
+    }
+    function hideEdit(){
+        $(".edit_dialog").css('display','none');
+        $("#HOverlay").removeClass('hover');
+    }
+    function addCanshu(){
+        var param = $('#add_data').serialize();
+//        alert(param);
+        $.post("{:U('Base/createEntryZ')}",param,function(data){
+//            alert(data);
+            if(data==0){
+                popup.success('填写数据保存成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('填写数据保存失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    
+    function editCanshu(){
+        var param1 = $('#edit_data').serialize();
+//        document.write(param1);
+        $.post("{:U('Base/updateEntryZ')}",param1,function(data){
+//            document.write(data);
+            if(data==0){
+//                alert(111);
+//                popup.success('修改数据保存成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('填写数据保存失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    
+    $(document).ready(function(){ 
+    });  
+</script>

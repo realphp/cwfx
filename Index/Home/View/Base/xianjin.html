@@ -1,0 +1,228 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByTime()">查询</a>
+<!--         <a class="btn submit" href="{:U('Base/excelXianjin')}">EXCEL导出数据</a> -->
+        <form id="form1" runat="server"  method="post" enctype="multipart/form-data" action="{:U('Base/uploadXianjin')}" style="float: left;">  
+            请选择您要上传的文件：
+            <div>  
+                <input class="File1" id="File1" type="file" name="File1"/>
+                <input class="uploadExcelDate" type="hidden" name="date" value="{$dateVal}"/>  
+                <input class="btn submit leading-in" type="submit" value="导入"/>  
+            </div>  
+        </form>
+        <script type="text/javascript">
+            $(document).ready(function(){ 
+                if(!$(".File1").val()){
+                    $(".leading-in").attr('disabled',true);
+                    $(".leading-in").css('background-color','#ccc');
+                    $(".leading-in").css('border','1px solid #ccc');
+                }
+                $(".File1").live('change',function(){ 
+                    var val = $(".File1").val();
+                    if(val != ''){
+                    $(".leading-in").attr('disabled',false);
+                    $(".leading-in").css('background-color','#1b75b6');
+                    $(".leading-in").css('border','1px solid #1b75b6');
+                    }else{
+                      $(".leading-in").attr('disabled',true);
+                      $(".leading-in").css('background-color','#ccc');
+                      $(".leading-in").css('border', '1px solid #ccc');
+                    }
+                });
+            });
+        </script>
+        <if condition="($review eq 0)">
+            <a class="btn submit" onClick="reviewXianjin()">审核</a>
+        <else/>
+            <a class="btn submit" onClick="cancelReviewXianjin()">取消审核</a>
+        </if>
+        <a class="btn submit" onClick="delXianjin()">清空数据</a>
+    </span>
+    <div class="current">现金流量表</div>
+</div>
+    <table width="50%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td width="70%">名称</td>
+                <td>金额</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="cashs" id="cash">
+            <tr  id="{$cash['cash']['id']}" >
+                <td><if condition='!empty($cash["par_name"])'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</if>{$cash['name']}</td>
+                <td align="center"  cid ="{$cash['id']}" aid ="" fd='money' <if condition="($review eq 0)">class="edit"</if> >{$cash['cash']['money']}</td>
+            </tr>
+            </volist>
+        </tbody>
+    </table>
+    <table width="50%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td width="70%">补充资料</td>
+                <td>金额</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="cashadd" id="casha">
+            <tr  id="{$casha['cashadd']['id']}" >
+                <td><if condition='!empty($casha["par_name"])'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</if>{$casha['name']}</td>
+                <td align="center" aid ="{$casha['id']}" cid ="" fd='money' <if condition="($review eq 0)">class="edit"</if> >{$casha['cashadd']['money']}</td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Base/xianjin/date/"+start;
+        
+	window.location.href="__APP__/"+url;
+    }
+    function delXianjin(){
+        var mydate = $('.uploadExcelDate').val();
+        var gnl=confirm("你真的确定要删除吗?"); 
+        if (gnl==true){ 
+            $.post("{:U('Base/deleteXianjin')}",{'date':mydate},function(data){
+                if(data==0){
+                    popup.success('清空现金流量表数据成功！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_success");
+                        location.reload();
+                    },2000);
+                }
+                if(data==1){
+                    popup.error('清空现金流量表数据失败！');
+                    setTimeout(function(){
+                        popup.close("asyncbox_error");
+                        location.reload();
+                    },2000);
+                }
+            });
+        }else{ 
+            return false; 
+        } 
+	
+    }
+    function reviewXianjin(){
+        var mydate = $('.uploadExcelDate').val();
+	$.post("{:U('Base/xianjinReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('审核现金流量表成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('审核现金流量表失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    function cancelReviewXianjin(){
+        var mydate = $('.uploadExcelDate').val();
+	$.post("{:U('Base/xianjinCancelReview')}",{'date':mydate},function(data){
+            if(data==0){
+                popup.success('取消审核现金流量表成功！');
+                setTimeout(function(){
+                    popup.close("asyncbox_success");
+                    location.reload();
+                },2000);
+            }
+            if(data==1){
+                popup.error('取消审核现金流量表失败！');
+                setTimeout(function(){
+                    popup.close("asyncbox_error");
+                    location.reload();
+                },2000);
+            }
+        });
+    }
+    $(document).ready(function(){   
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="xianjin.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        $(".edit").dblclick(function(){  
+            var inval=$(this).html();//获取当前点击td内容  
+            var infd=$(this).attr("fd");//获取当前点击td中的fd自定义属性值
+            var inaid=$(this).attr("aid");
+            var incid=$(this).attr("cid");
+            if(incid !== '1' && incid !== '12' && incid !== '23' && inaid !== '1' && inaid !=='19' && inaid !== '23'){
+            
+            var inid=$(this).parents().attr("id");//获取当前点击td父类tr的id  
+            if($(this).children("input").length>0){return false;}
+            $(this).html("<input id='edit"+infd+inid+"'name='rate["+infd+"]' value='"+inval+"'>");//双击以后当前td变成输入框，id定义为edit"+infd+inid+"为了避免重复，value为原内容  
+            //鼠标焦点失去后执行   
+            $("#edit"+infd+inid).focus().live("blur",function(){  
+                var editval=$(this).val();//获取更改内容  
+                $(this).parents("td").html(editval); //将点击的td中原内容改为输入的新内容
+                //如果id为空，就add
+                if(!editval){
+                    popup.alert('你没有填写数据！');
+                    return false;
+                }
+                if(!inid){
+                    $.post("{:U('Base/createFlow')}",{'cash_id':incid,'cashadd_id':inaid,fd:infd,val:editval,date:b},function(data){
+                        if(data==0){
+//                            popup.success('填写数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },200);
+                        }
+                        if(data==1){
+                            popup.error('填写数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }else{
+                    //如果id有值，就edit
+                    $.post("{:U('Base/updateFlow')}",{id:inid,fd:infd,val:editval},function(data){
+                        if(data==0){
+//                            popup.success('修改数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },200);
+                        }
+                        if(data==1){
+//                            popup.error('修改数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }
+//                popup.alert(inid);
+            });  
+            } 
+        });  
+  });  
+</script>

@@ -1,0 +1,63 @@
+<include file="Public:header"/>
+<script>
+    var url = '{:U("Index/sell")}';
+</script>
+<div class="all-container" style="display:block;">
+    <div class="head-top-logo">
+        <a class="return" href="{:U('index')}"></a>
+        <a href="#" class="logo">销售</a>
+        <a class="member" id="open_right"></a>		
+    </div>
+    <center>
+
+        <div id="scl" style="background-color: #fff;width: 320px;height: 60px;margin-top: 30px;padding-top: 10px;">
+            <a class="j_btn" id="a_1" href="javascript:void(0)" onClick="selectmonth2(1, this, url)">上月</a>
+            <a class="j_btn on" id="a_2"   href="javascript:void(0)" onClick="selectmonth2(2, this, url)">本月</a>
+        </div>
+        <div style="background-color: #fff;width: 320px;height: 60px;">
+            <input type="text" id="change" name="change" value="{$change}"/>
+            <a class="btn submit" onClick="update()">提交</a>
+        </div>
+        <div  id="container" style="background-color: #fff;width: 320px;">
+
+        </div>
+    </center>
+    <div class="bottom-table-zw"></div>
+</div>     
+<include file="Public:right"/>
+<include file="Public:footer"/>
+
+<script type="text/javascript">
+
+    //左侧Javascript代码
+    var qianyuji = Number({$qianyuji});
+            var houyuji = Number({$houyuji});
+            var qiancash = Number({$qiancash});
+            var houcash = Number({$houcash});
+            $(function () {
+                higthChatsColumn(qianyuji, houyuji, qiancash, houcash);
+            });
+
+    function update() {
+        var change = $('#change').val();
+        if ($('#a_1').hasClass('on')) {
+            var type = 1;
+        } else {
+            var type = 2;
+        }
+        $.post("{:U('Index/editSell')}", {'change': change, type: type}, function (data) {
+            if (data == 0) {
+                alert('修改成功！');
+                $.post(url, {type: type}, function (data) {
+                    var json = $.parseJSON(data);
+                    if (json) {
+                        higthChatsColumn(parseFloat(json.qianyuji), parseFloat(json.houyuji), parseFloat(json.qiancash), parseFloat(json.houcash));
+                    }
+                });
+            }
+            if (data == 1) {
+                alert('修改失败！');
+            }
+        });
+    }
+</script>	

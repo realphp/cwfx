@@ -1,0 +1,172 @@
+<include file="Public:header"/>
+<style type="text/css">
+    .title{font-family: "微软雅黑";font-size: 18px;margin:0 auto;width:95px;margin-top:10px;}
+    #chart{margin-top:65px; }
+    .into {margin:0 auto;width: 100px;margin-top:50px; }
+    a:link,a:visited{
+        text-decoration:none;  /*超链接无下划线*/
+    }
+    .into a{
+        height: 35px;width: 100px;background-color: #0075c1;display: block;line-height: 35px;font-size: 15px;color: #fff;font-family: "微软雅黑";
+        -webkit-border-radius: 5px;-moz-border-radius: 5px;text-align: center;margin-bottom:20px;
+    }
+</style>
+<script type="text/javascript" src="__PUBLIC__/js/highcharts/highcharts-more.js"></script>
+<div class="all-container">
+    <div class="head-top-logo">
+        <a href="#" class="logo">YTT财务分析系统</a>
+        <a class="member" id="open_right"></a>		
+    </div>
+    <div class="pp-container"  style="margin-top:20px;overflow: hidden;background: #fff;width: 320px;padding: 0;">
+        <img src='__PUBLIC__/image/wap/edit.png'  style='width:25px;height:25px;position: relative;right: 10px;top: 10px;z-index: 9999;float: right;' onclick="updown(this)"/>
+        <center>
+            <div id="updown" style='display:none;margin-top: 40px;' >
+                <form >
+                    <table class="table" >
+                        <tr>  
+                            <td>销量</td><td><input type="number"  name="sell" value='{$chs.1.change}'/></td>
+                            <td>售价</td><td><input type="number"  name="price"     value='{$chs.2.change}'/></td>
+                        </tr>
+
+                        <tr>  
+                            <td>直接成本</td><td><input type="number"  name="cost"  value='{$chs.3.change}'/></td>
+                            <td>变动费用</td><td><input type="number"  name="costchange"  value='{$chs.4.change}'/></td>
+                        </tr>
+                        <tr>  
+                            <td>固定费用</td><td><input type="number" name="fix"   value='{$chs.5.change}'/></td>
+                            <td</td><td></td>
+                        </tr>
+
+                    </table>
+                </form>
+                <a class="j_btn"  href="javascript:void(0)" onClick="changeData()">提交</a>
+            </div>
+        </center>
+        <div id="container" style="width: 320px;height:365px;margin-top: 25px;">
+
+        </div>
+
+        <div class="into"><a href="{:U('Index/index')}">查看详情</a></div>
+    </div>
+    <div class="bottom-table-zw"></div>
+</div>        
+
+<include file="Public:right"/>
+<include file="Public:footer"/>
+<script>
+    $(function () {
+
+        var before = {$benqijinglirun};
+                var after1 = {$after1};
+                var after2 = {$after2};
+                var after3 = {$after3};
+                var after4 = {$after4};
+                var after5 = {$after5};
+
+        highchartsNet(before, after1, after2, after3, after4, after5);
+
+
+    });
+
+
+    function changeData() {
+        var change = $('form').serializeArray();
+        for (k in change) {
+            var value = change[k]['value'];
+            if (isNaN(value)||0 >= value || value > 100) {
+                alert('请输入0-100之间的数字');
+                return;
+            }
+        }
+        if (change) {
+            $.ajax({
+                url: "{:U('ajaxChange')}",
+                type: 'POST',
+                data: {'change': change},
+                success: function (data) {
+                    if (data == 1) {
+                        alert('输入错误');
+                    } else {
+                        alert('修改成功');
+                        $.post("{:U('Index/index1')}", {type: 1}, function (data) {
+                            var json = $.parseJSON(data);
+                            if (json) {
+                                highchartsNet(parseFloat(json.before), parseFloat(json.after1), parseFloat(json.after2), parseFloat(json.after3), parseFloat(json.after4), parseFloat(json.after5));
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    function updown(obj) {
+        $('#updown').slideToggle('fast', function () {
+            var status = $(this).css('display')
+            var str;
+            if (status == 'none') {
+                str = '__PUBLIC__/image/wap/edit.png';
+                $(obj).attr('src', str);
+            } else {
+                str = '__PUBLIC__/image/wap/close.png';
+                $(obj).attr('src', str);
+            }
+        });
+    }
+
+    function highchartsNet(before, after1, after2, after3, after4, after5) {
+        $('#container').highcharts({
+            chart: {
+                polar: true,
+                type: 'line'
+            },
+            title: {
+                text: '五大决策',
+                //x: -80
+            },
+            pane: {
+                size: '79%',
+                center: ['50%', '50%']
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            xAxis: {
+                categories: ['销量', '售价', '直接成本', '变动费用',
+                    '固定费用'],
+                tickmarkPlacement: 'on',
+                lineWidth: 0
+            },
+            yAxis: {
+                gridLineInterpolation: 'polygon',
+                lineWidth: 0,
+                min: 0
+            },
+            tooltip: {
+                shared: true,
+                pointFormat: '<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>'
+            },
+            legend: {
+                align: 'center',
+                verticalAlign: 'top',
+                y: 20,
+                layout: 'vertical'
+            },
+            series: [{
+                    name: '变化前',
+                    data: [before, before, before, before, before],
+                    pointPlacement: 'on'
+                }, {
+                    name: '变化后',
+                    data: [after1, after2, after3, after4, after5],
+                    pointPlacement: 'on'
+                }]
+
+        });
+    }
+
+
+</script>

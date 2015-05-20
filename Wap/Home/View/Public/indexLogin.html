@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YTT 财务分析系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- CSS -->
+    <link rel="stylesheet" href="__PUBLIC__/css/mobile/style.css">
+</head>
+
+<body class="loginWeb">
+    <div class="all-container" style="width: 100%; background-color: #0075c1; height: 712px;">
+            <div class="head-top-logo">
+                <img src="__PUBLIC__/image/wap/logo.png"/>  
+            </div>
+            <form method="post" id="form" name="form">
+                <div class="tishi" style="color: red;height: 30px;line-height: 30px;font-family: '微软雅黑';display: none;"></div>
+                <input type="text" name="admin[username]" class="username" id="username" placeholder="用户名">
+                <input type="password" name="admin[password]" class="password" id="pwd" placeholder="密码">
+                <button type="submit" class="btn submit">登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+                <div class="error"><span>+</span></div>
+                
+            </form>
+            
+            <div class="connect">
+               
+                
+            </div>
+            <div class="footer">
+                <p>版权所有©2015&nbsp;&nbsp;YTT史永翔商学院
+                <p>服务热线：400-000-8884</p>
+            </div>
+        </div>
+    <include file="Common/javascripts" />
+    <script type="text/javascript">
+        $(document).ready(
+            function(){
+                $("#form").submit( function(){
+                    login();
+                    return false;
+                });
+            }
+        );
+        function login(){
+            var user = $("#username").val();
+            var pass = $("#pwd").val();
+            if (user == ""){
+                $(".tishi").show();
+                $(".tishi").html("请输入用户名！");
+                $("#username").focus();
+                return false;
+            }
+            if(pass == ""){
+                $(".tishi").show();
+                $(".tishi").html("请输入登录密码！");
+                $("#pwd").focus();
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: "{:U('Public/login')}",
+                data: "username=" + user + "&password=" + pass,
+                beforeSend: function(){
+                    $(".tishi").show();
+                    $(".tishi").html("登录中，请稍候...");
+                },
+                success: function(msg){
+                    console.log(msg);
+                    if(msg == "success"){
+                        alert("登录成功，欢迎" + user + "使用管理报表系统！");
+                        var url   = "Index/index1/";
+                        window.location.href="__APP__/"+url;
+                    }else {
+                        alert("没有此用户或者密码不正确！");
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

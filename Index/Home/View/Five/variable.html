@@ -1,0 +1,184 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByVariableTime()">查询</a>
+<!--        日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>-->
+    </span>
+    <div class="current">变动费用</div>
+</div>
+    <table id="dd" width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>项目</td>
+                <td>单位</td>
+                <td>本年累计数</td>
+                <td>比率分析(%)</td>
+                <td>单位</td>
+                <td>利润变化总额</td>
+                <td>现金变化总额</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="pin" id="pi">
+            <tr id="{$pi['id']}" >
+                <td align="center" >{$pi['name']}</td>
+                <td align="center" ></td>
+                <td align="center"  class="edit"  fd='now_money'>{$pi['mrate']['sum_money']}</td>
+                <td align="center" class="edit"  fd='sum_money'></td>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td style="display: none;">{$pi['id']}</td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+<input type="hidden" class="hidden_Data" value="{$variable}">   
+<!--参数录入的现金费用比-->
+<input type="hidden" class="hidden_Data_cash" value="{$cashbi}">
+
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByVariableTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Five/variable/date/"+start;
+//            alert("__APP__/"+url);
+        
+	window.location.href="__APP__/"+url;
+    }
+    $(document).ready(function(){  
+        var variable = $(".hidden_Data").val();
+        var variableshu = variable/100;
+        //计算比率分析
+        //主营业务净收入
+        var zyywjsr = $("#3").children("td").eq(2).html();
+        var zyywjsrbi = ((zyywjsr  / zyywjsr)*100).toFixed(2);
+        $("#3").children("td").eq(1).html(zyywjsrbi);
+        $("#3").children("td").eq(3).html(zyywjsrbi);
+        $("#3").children("td").eq(4).html((zyywjsrbi* variableshu).toFixed(2));
+        //变动费用
+        var bdcb = $("#4").children("td").eq(2).html();
+        var bdcbbi = ((bdcb  / zyywjsr)*100).toFixed(2);
+        $("#4").children("td").eq(1).html(bdcbbi);
+        $("#4").children("td").eq(3).html(bdcbbi);
+//        $("#4").children("td").eq(4).html(bdcbbi);
+        //毛益
+        var maoy = $("#5").children("td").eq(2).html();
+        var maoybi = ((maoy  / zyywjsr)*100).toFixed(2);
+        $("#5").children("td").eq(1).html(maoybi);
+        $("#5").children("td").eq(3).html(maoybi);
+//        $("#5").children("td").eq(4).html(maoybi);
+         //变动营业费用  现金费用比
+        var cashbi = $(".hidden_Data_cash").val();
+        $("#5").children("td").eq(6).html(cashbi+'%');
+        //变动营业费用
+        var bdyyfy = $("#6").children("td").eq(2).html();
+        var lrbhze6 = (bdyyfy * variableshu).toFixed(2);
+        $("#6").children("td").eq(5).html(lrbhze6);
+        var cashchange6 = (bdyyfy*(cashbi/100)*variableshu).toFixed(2);
+        $("#6").children("td").eq(6).html(cashchange6);
+        //销售量
+        var xsldx = $("#7").children("td").eq(2).html();
+        var xsldxbi = ((xsldx  / zyywjsr)*100).toFixed(2);
+        $("#7").children("td").eq(1).html(xsldxbi);
+        $("#7").children("td").eq(3).html(xsldxbi);
+        $("#7").children("td").eq(5).html((xsldx * variableshu).toFixed(2));
+        var cashchange7 = (xsldx*(cashbi/100)*variableshu).toFixed(2);
+        $("#7").children("td").eq(6).html(cashchange7);
+        //销售收入
+        var xsedx = $("#8").children("td").eq(2).html();
+        var xsedxbi = ((xsedx  / zyywjsr)*100).toFixed(2);
+        $("#8").children("td").eq(1).html(xsedxbi);
+        $("#8").children("td").eq(3).html(xsedxbi);
+        $("#8").children("td").eq(5).html((xsedx * variableshu).toFixed(2));
+        var cashchange8 = (xsedx*(cashbi/100)*variableshu).toFixed(2);
+        $("#8").children("td").eq(6).html(cashchange8);
+        //经营贡献
+        var jygx = $("#9").children("td").eq(2).html();
+        var jygxbi = ((jygx  / zyywjsr)*100).toFixed(2);
+        $("#9").children("td").eq(1).html(jygxbi);
+        $("#9").children("td").eq(3).html(jygxbi);
+        $("#9").children("td").eq(4).html((jygxbi* variableshu).toFixed(2));
+        $("#9").children("td").eq(5).html(-lrbhze6);
+        $("#9").children("td").eq(6).html(-cashchange6);
+        //经营利润
+        var jylr = $("#14").children("td").eq(2).html();
+        var jylrbi = ((jylr  / zyywjsr)*100).toFixed(2);
+        $("#14").children("td").eq(1).html(jylrbi);
+        $("#14").children("td").eq(3).html(jylrbi);
+        $("#14").children("td").eq(4).html((jylrbi* variableshu).toFixed(2));
+        //税前盈余
+        var sqyy = $("#16").children("td").eq(2).html();
+        var sqyybi = ((sqyy  / zyywjsr)*100).toFixed(2);
+        $("#16").children("td").eq(1).html(sqyybi);
+        $("#16").children("td").eq(3).html(sqyybi);
+        $("#16").children("td").eq(4).html((sqyybi* variableshu).toFixed(2));
+        $("#16").children("td").eq(5).html(-lrbhze6);
+        //本期净利润
+        var bqjlr = $("#19").children("td").eq(2).html();
+        var bqjlrbi = ((bqjlr  / zyywjsr)*100).toFixed(2);
+        $("#19").children("td").eq(1).html(bqjlrbi);
+        $("#19").children("td").eq(3).html(bqjlrbi);
+        $("#19").children("td").eq(4).html((bqjlrbi* variableshu).toFixed(2));
+        $("#19").children("td").eq(5).html(-lrbhze6);
+        $("#19").children("td").eq(6).html(-cashchange6);
+        
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="variable.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        $.post("{:U('Five/isExistVariable')}",{'date':b},function(data){
+            if(data==0){
+                //存在就修改数据
+                $("table tr:gt(0)").each(function(i){
+                    var Cname = $(this).children("td:eq(0)").text();
+                    var Cunit1 = $(this).children("td:eq(1)").text();
+                    var Cmoney = $(this).children("td:eq(2)").text();
+                    var Cratio = $(this).children("td:eq(3)").text();
+                    var Cunit2 = $(this).children("td:eq(4)").text();
+                    var CprofitChange = $(this).children("td:eq(5)").text();
+                    var CcashChange = $(this).children("td:eq(6)").text();
+                    var Cpid = $(this).children("td:eq(7)").text();
+                    $.post("{:U('Five/editVariable')}",{'name':Cname,'unit1':Cunit1,'sum_money':Cmoney,'ratio':Cratio,'unit2':Cunit2,'profitChange':CprofitChange,'cashChange':CcashChange,'date':b,'pid':Cpid},function(data){
+                        
+                    });
+                });
+            }
+            if(data==1){
+                //不存在就添加数据
+                $("table tr:gt(0)").each(function(i){
+                    var Cname = $(this).children("td:eq(0)").text();
+                    var Cunit1 = $(this).children("td:eq(1)").text();
+                    var Cmoney = $(this).children("td:eq(2)").text();
+                    var Cratio = $(this).children("td:eq(3)").text();
+                    var Cunit2 = $(this).children("td:eq(4)").text();
+                    var CprofitChange = $(this).children("td:eq(5)").text();
+                    var CcashChange = $(this).children("td:eq(6)").text();
+                    var Cpid = $(this).children("td:eq(7)").text();
+                    $.post("{:U('Five/addVariable')}",{'name':Cname,'unit1':Cunit1,'sum_money':Cmoney,'ratio':Cratio,'unit2':Cunit2,'profitChange':CprofitChange,'cashChange':CcashChange,'date':b,'pid':Cpid},function(data){
+                        
+                    });
+                });
+            } 
+        });
+  });  
+
+</script>

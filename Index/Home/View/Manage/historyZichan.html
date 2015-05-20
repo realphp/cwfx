@@ -1,0 +1,149 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="choose_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10">
+        <a class="btn submit" href="javascript:void(0);" onClick="filterByTime2()">查询</a>
+        <a class="btn submit explode" href="javascript:void(0);">导出</a>
+        日期：<input id="start_time" class=" time input" type="text" value="{$_GET['sdate']}" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" value="{$_GET['edate']}" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>
+    </span>
+    <div class="current">管理标准资产负债表</div>
+</div>
+    <table id="dd" width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>名称</td>
+                <script type="text/javascript">
+                    var arr=[];
+                </script>
+                <volist name="months" id="month">
+                <script type="text/javascript">
+                    arr.push('{$month}');
+                </script>
+                <td>{$month}</td>
+                </volist>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="assets" id="asset" >
+            <tr align="center"  <if condition='empty($asset["par_name"])'>style="background:#ccc;"</if>>
+                <td>{$asset['name']}</td>
+                <volist name="months" id="month">
+                    <td class="edit" id ="{$month}_{$asset['id']}" fd='end_money'>{$asset[$month]['rich']['end_money']}</td>
+                </volist>
+            </tr>
+            </volist>
+        </tbody>
+    </table>
+    
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByTime2(){
+	var start = $( "#choose_time" ).val();
+        var url   = "Manage/zichan/date/"+start;
+	window.location.href="__APP__/"+url;
+    }
+    function chooseTime(){
+        var begintime_ms = Date.parse(new Date($.trim($("#start_time").val())));
+        var endtime_ms = Date.parse(new Date($.trim($("#stop_time").val())));
+//        alert(begintime_ms);
+        endtime_ms += 24*60*60*1000;
+        if(endtime_ms-begintime_ms>6*30*24*60*60*1000){
+                popup.error("一次最多可查询6个月的数据！");
+                return false;
+        }
+        if(begintime_ms > endtime_ms){
+                popup.error("开始时间不能小于结束时间");
+                return false;
+        }
+        var begin = $("#start_time").val();
+        var end = $("#stop_time").val()
+        var urls   = "Manage/historyZichan/sdate/"+begin+"/edate/"+end;
+        window.location.href="__APP__/"+urls;
+    }
+    $(document).ready(function(){ 
+        $.each(arr, function(i,val){
+            //流动资产合计
+            var huobizijin = $("#"+val+"_2").html();
+            var yingshoupiaoju = $("#"+val+"_3").html();
+            var yingshouzhangkuan = $("#"+val+"_4").html();
+            var yufuzhangkuan = $("#"+val+"_5").html();
+            var qitayingshoukuan = $("#"+val+"_6").html();
+            var cunhuo = $("#"+val+"_7").html();
+            var liudongzichanheji = (huobizijin*1 + yingshoupiaoju*1 + yingshouzhangkuan*1 + yufuzhangkuan*1 + qitayingshoukuan*1 + cunhuo*1).toFixed(2);
+            $("#"+val+"_8").html(liudongzichanheji);
+
+            //非流动资产
+            var touzhixingfang = $("#"+val+"_10").html();
+            var gudingzichan = $("#"+val+"_11").html();
+            var zaijiangongchen = $("#"+val+"_12").html();
+            var wuxingzichan = $("#"+val+"_13").html();
+            var qitafeiliudong = $("#"+val+"_14").html();
+            var feiliudongzichanheji = (touzhixingfang*1 + gudingzichan*1 + zaijiangongchen*1 + wuxingzichan*1 + qitafeiliudong*1).toFixed(2);
+            $("#"+val+"_15").html(feiliudongzichanheji);
+            
+            //资产总计
+            var zichanhe = (liudongzichanheji*1+feiliudongzichanheji*1).toFixed(2);
+            $("#"+val+"_16").html(zichanhe); 
+            //营运负债合计
+            var yingyun1=$("#"+val+"_18").html();
+            var yingyun2=$("#"+val+"_19").html();
+            var yingyun3=$("#"+val+"_20").html();
+            var yingyun4=$("#"+val+"_21").html();
+            var yingyun5=$("#"+val+"_22").html();
+            var yingyun6=$("#"+val+"_23").html();
+            var yingyunzong = (yingyun1*1+yingyun2*1+yingyun3*1+yingyun4*1+yingyun5*1+yingyun6*1).toFixed(2);
+            $("#"+val+"_24").html(yingyunzong);
+            //营运资产
+            $("#"+val+"_25").html((zichanhe-yingyunzong).toFixed(2));
+            
+            //流动负债合计
+            var duanqijiekuan = $("#"+val+"_27").html();
+            var yingfupiaoju = $("#"+val+"_28").html();
+            var liudongfuzhaiheji = (duanqijiekuan*1 + yingfupiaoju*1).toFixed(2);
+            $("#"+val+"_29").html(liudongfuzhaiheji);
+
+            //非流动负债合计
+            var yingfuzhaiquan = $("#"+val+"_31").html();
+            var qitafuzhai = $("#"+val+"_32").html();
+            var feiliudongfuzhaiheji = (yingfuzhaiquan*1 + qitafuzhai*1).toFixed(2);
+            $("#"+val+"_33").html(feiliudongfuzhaiheji);
+            
+            //负债合计
+            var fuzhaiheji = (liudongfuzhaiheji*1 + feiliudongfuzhaiheji*1).toFixed(2);
+            $("#"+val+"_34").html(fuzhaiheji);
+            
+            //所有者权益合计
+            var shishouziben = $("#"+val+"_36").html();
+            var zibengongjijin = $("#"+val+"_37").html();
+            var yingyugongjijin = $("#"+val+"_38").html();
+            var weifenpeilirun = $("#"+val+"_39").html();
+            var shaoshugudongquanyi = $("#"+val+"_40").html();
+            var suoyouzhequanyiheji = (shishouziben*1+zibengongjijin*1+yingyugongjijin*1+weifenpeilirun*1+shaoshugudongquanyi*1).toFixed(2);
+            $("#"+val+"_41").html(suoyouzhequanyiheji);
+
+            //融资和所得者
+            var quanyi = (fuzhaiheji*1+suoyouzhequanyiheji*1).toFixed(2);
+            $("#"+val+"_42").html(quanyi);
+        });
+  });
+  
+  //导出按钮
+    $(function(){
+        $(".explode").on("click",function(){
+            var url = window.location.href;
+            var str = '';
+            str = url.split("historyZichan");
+            str = str[1].split("/");
+            var skip_url = 'Manage/excelHistoryZichan';
+            for(var i = 0;i < str.length; i++){
+                skip_url += '/'+str[i]
+            }
+            location.href=skip_url;
+        });
+    });
+</script>

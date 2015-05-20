@@ -1,0 +1,450 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="start_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        <a class="btn submit" onClick="filterByFiveTime()">查询</a>
+<!--        日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>-->
+    </span>
+    <div class="current">五大决策</div>
+</div>
+    <table id="dd" width="100%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>五大决策</td>
+                <td>变化比例(%)</td>
+                <td>利润增减率(%)</td>
+                <td>利润增长率(%)</td>
+                <td>综合利润增长额</td>
+                <td>预计利润</td>
+                <td>现金增长率(%)</td>
+                <td>经营现金流增长额</td>
+                <td>变化前</td>
+                <td>变化后</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="five" id="fi">
+            <tr id="{$fi['id']}" >
+                <td align="center" >{$fi['name']}</td>
+                <td align="center" class="edit" fd='{$fi["five"]["id"]}'>{$fi["five"]["change"]}</td>
+                <td align="center"></td>
+                <?php if($fi['id']==='1'){echo "<td align='center' rowspan='5'></td><td align='center' rowspan='5'></td><td align='center' rowspan='5'></td><td align='center' rowspan='5'></td><td align='center' rowspan='5'></td>"; }?>
+                <td align="center"></td>
+                <td align="center"></td>
+                <td style="display: none;"></td>
+                <td style="display: none;"></td>
+                <td style="display: none;"></td>
+                <td style="display: none;"></td>
+                <td style="display: none;">{$fi["five"]["id"]}</td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+<!--<input type="hidden" class="hidden_Data_sell1" value="{$xiaozeng['sum_money']}">   
+<input type="hidden" class="hidden_Data_sell2" value="{$xiaozeng['profitChange']}"> 
+<input type="hidden" class="hidden_Data_sell3" value="{$xiaozeng['cashChange']}"> 
+
+<input type="hidden" class="hidden_Data_zhangjia1" value="{$zhangjia['sum_money']}">   
+<input type="hidden" class="hidden_Data_zhangjia2" value="{$zhangjia['profitChange']}"> 
+<input type="hidden" class="hidden_Data_zhangjia3" value="{$zhangjia['cashChange']}">
+
+<input type="hidden" class="hidden_Data_change1" value="{$change['sum_money']}">   
+<input type="hidden" class="hidden_Data_change2" value="{$change['profitChange']}"> 
+<input type="hidden" class="hidden_Data_change3" value="{$change['cashChange']}"> 
+
+<input type="hidden" class="hidden_Data_variable1" value="{$variable['sum_money']}">   
+<input type="hidden" class="hidden_Data_variable2" value="{$variable['profitChange']}"> 
+<input type="hidden" class="hidden_Data_variable3" value="{$variable['cashChange']}">
+
+<input type="hidden" class="hidden_Data_constant1" value="{$constant['sum_money']}">   
+<input type="hidden" class="hidden_Data_constant2" value="{$constant['profitChange']}"> 
+<input type="hidden" class="hidden_Data_constant3" value="{$constant['cashChange']}"> -->
+
+<!--管理现金表的 经营活动产生的现金流量净额-->
+<input type="hidden" class="hidden_Data_cashMoney" value="{$cashMoney['money']}"> 
+<!--管理现金表的 现金及现金等价物净增加额-->
+<input type="hidden" class="hidden_Data_cashMoney2" value="{$cashMoney2['money']}"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table1"></table>
+
+<script type="text/javascript" src="__PUBLIC__/js/highcharts/highcharts.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/highcharts/exporting.js"></script>
+<div class="pp-container" id="container" style="height: 420px;width: 1180px;line-height: 35px;border: 1px solid #444;border-radius: 5px;">
+    
+</div>
+
+
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+
+<script type="text/javascript">
+    function filterByFiveTime(){
+	var start = $( "#start_time" ).val();
+        var url   = "Five/index/date/"+start;
+	window.location.href="__APP__/"+url;
+    }
+    //添加数据=============================================================================
+        $(".edit").dblclick(function(){  
+            var aUrl = window.location.href;
+            var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+            if(b==="index.html"){
+                var myDate = new Date();
+    //            myDate.getYear();        //获取当前年份(2位)
+                myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+                var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+                if(month<=8){
+                    month = '0' + (month*1 + 1);
+                }else{
+                    month = month*1 + 1;
+                }
+    //            console.log(myDate.getFullYear()+'-'+month);
+                b = myDate.getFullYear()+'-'+month;
+            }
+            
+            var inval=$(this).html();//获取当前点击td内容  
+            var infd=$(this).attr("fd");//获取当前点击五大决策的id
+            var inid=$(this).parents().attr("id");//获取当前点击td父类tr的id  
+            
+            if($(this).children("input").length>0){return false;}
+            $(this).html("<input id='edit"+infd+inid+"'name='rate["+infd+"]' value='"+inval+"'>");//双击以后当前td变成输入框，id定义为edit"+infd+inid+"为了避免重复，value为原内容  
+            //鼠标焦点失去后执行   
+            $("#edit"+infd+inid).focus().live("blur",function(){  
+                var editval=$(this).val();//获取更改内容  
+                $(this).parents("td").html(editval); //将点击的td中原内容改为输入的新内容
+                //如果id为空，就add
+                if(!editval){
+                    popup.alert('你没有填写数据！');
+                    return false;
+                }
+                if(!infd){
+                    $.post("{:U('Five/create')}",{'f_id':inid,fd:infd,'change':editval,'date':b},function(data){
+                        if(data==0){
+                            popup.success('填写数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },2000);
+                        }
+                        if(data==1){
+                            popup.error('填写数据保存失败！');
+//                            setTimeout(function(){
+//                                popup.close("asyncbox_error");
+//                                location.reload();
+//                            },2000);
+                        }
+                    });
+                }else{
+                    //如果id有值，就edit
+                    $.post("{:U('Five/update')}",{'f_id':inid,fd:infd,'change':editval,'date':b},function(data){
+                        if(data==0){
+                            popup.success('修改数据保存成功！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_success");
+                                location.reload();
+                            },2000);
+                        }
+                        if(data==1){
+                            popup.error('修改数据保存失败！');
+                            setTimeout(function(){
+                                popup.close("asyncbox_error");
+                                location.reload();
+                            },2000);
+                        }
+                    });
+                }
+//                popup.alert(inid);
+            });  
+             
+        });  
+        //==============================================================================================
+        //计算利润增减率
+        var sell1 = "{$xiaozeng['sum_money']}";
+        var sell2 = "{$xiaozeng['profitChange']}";
+        var sellLiru = ((sell2/sell1)*100).toFixed(2);
+        $("#1").children("td").eq(2).html(sellLiru);
+        
+        var zhangjia1 = "{$zhangjia['sum_money']}";
+        var zhangjia2 = "{$zhangjia['profitChange']}";
+        var zhangjiaLiru = ((zhangjia2/zhangjia1)*100).toFixed(2);
+        $("#2").children("td").eq(2).html(zhangjiaLiru); 
+        
+        var change1 = "{$change['sum_money']}";
+        var change2 = "{$change['profitChange']}";
+        var changeLiru = ((change2/change1)*100).toFixed(2);
+        $("#3").children("td").eq(2).html(changeLiru); 
+        
+        var variable1 = "{$variable['sum_money']}";
+        var variable2 = "{$variable['profitChange']}";
+        var variableLiru = ((variable2/variable1)*100).toFixed(2);
+        $("#4").children("td").eq(2).html(variableLiru); 
+        
+        var constant1 = "{$constant['sum_money']}";
+        var constant2 = "{$constant['profitChange']}";
+        var constantLiru = ((constant2/constant1)*100).toFixed(2);
+        $("#5").children("td").eq(2).html(constantLiru); 
+        
+        //敏感系数计算
+        var sellData = $("#1").children("td").eq(1).html(); 
+        if(sellData === '0'){var D4 = 0;}else{
+            D4 = (sellLiru/sellData).toFixed(2);
+        }
+        $("#1").children("td").eq(10).html(D4);
+        
+        var priceData = $("#2").children("td").eq(1).html(); 
+        if(priceData === '0'){var D5 = 0;}else{
+            D5 = (zhangjiaLiru/priceData).toFixed(2);
+        }
+        $("#2").children("td").eq(5).html(D5);
+        var changeData = $("#3").children("td").eq(1).html(); 
+        if(changeData === '0'){var D6 = 0;}else{
+            D6 = (changeLiru/changeData).toFixed(2);
+        }
+        $("#3").children("td").eq(5).html(D6);
+        var variableData = $("#4").children("td").eq(1).html(); 
+        if(variableData === '0'){var D7 = 0;}else{
+            D7 = (variableLiru/variableData).toFixed(2);
+        }
+        $("#4").children("td").eq(5).html(D7);
+        var constantData = $("#5").children("td").eq(1).html(); 
+        if(constantData === '0'){var D8 = 0;}else{
+            D8 = (constantLiru/constantData).toFixed(2);
+        }
+        $("#5").children("td").eq(5).html(D8);
+        //计算利润增涨率
+        var B4 = sellData/100;
+        var B5 = priceData/100;
+        var B6 = changeData/100;
+        var B7 = variableData/100;
+        var B8 = constantData/100;
+        var profitZeng = ((D4*B4 + D5*B5 - Math.abs(D6)*B6 - Math.abs(D7)*B7 - Math.abs(D8)*B8 + D5*B4*B5 - Math.abs(D6)*B4*B6 - Math.abs(D7)*B4*B7)*100).toFixed(2);
+        $("#1").children("td").eq(3).html(profitZeng); 
+        
+        //计算综合利润增长率
+        var allProfit = ((profitZeng/100) * sell1).toFixed(2);
+        $("#1").children("td").eq(4).html(allProfit); 
+        
+        //计算预计利润
+        var yujiLirun = (sell1*1 + allProfit*1).toFixed(2);
+        $("#1").children("td").eq(5).html(yujiLirun); 
+        
+        //计算经营现金增长额
+        var sell3 = "{$xiaozeng['cashChange']}";
+        var zhangjia3 = "{$zhangjia['cashChange']}";
+        var change3 = "{$change['cashChange']}";
+        var variable3 = "{$variable['cashChange']}";
+        var constant3 = "{$constant['cashChange']}";
+        $("#1").children("td").eq(11).html(sell3);
+        $("#2").children("td").eq(6).html(zhangjia3);
+        $("#3").children("td").eq(6).html(change3);
+        $("#4").children("td").eq(6).html(variable3);
+        $("#5").children("td").eq(6).html(constant3);
+        //计算现金流增减率
+        //管理现金流量表的 mc_id=11的值
+        var cashMoney = $(".hidden_Data_cashMoney").val();
+        var I4 = ((sell3/cashMoney)*100).toFixed(2);
+        var I5 = ((zhangjia3/cashMoney)*100).toFixed(2);
+        var I6 = ((change3/cashMoney)*100).toFixed(2);
+//        alert(change3);
+        var I7 = ((variable3/cashMoney)*100).toFixed(2);
+        var I8 = ((constant3/cashMoney)*100).toFixed(2);
+        $("#1").children("td").eq(12).html(I4);
+        $("#2").children("td").eq(7).html(I5);
+        $("#3").children("td").eq(7).html(I6);
+        $("#4").children("td").eq(7).html(I7);
+        $("#5").children("td").eq(7).html(I8);
+        //现金敏感系数计算 
+        if(sellData === '0'){var J4 = 0;}else{
+            J4 = (I4/sellData).toFixed(2);
+        }
+        
+        if(priceData === '0'){var J5 = 0;}else{
+            J5 = (I5/priceData).toFixed(2);
+        }
+        
+        if(changeData === '0'){var J6 = 0;}else{
+            J6 = (I6/changeData).toFixed(2);
+        }
+        
+        if(variableData === '0'){var J7 = 0;}else{
+            J7 = (I7/variableData).toFixed(2);
+        }
+        
+        if(constantData === '0'){var J8 = 0;}else{
+            J8 = (I8/constantData).toFixed(2);
+        }
+        $("#1").children("td").eq(13).html(J4);
+        $("#2").children("td").eq(8).html(J5);
+        $("#3").children("td").eq(8).html(J6);
+        $("#4").children("td").eq(8).html(J7);
+        $("#5").children("td").eq(8).html(J8);
+        
+        //现金增长率
+        var cashUp = ((J4*(sellData/100) + J5*(priceData/100) - Math.abs(J6)*(changeData/100) - Math.abs(J7)*(variableData/100) - Math.abs(J8)*(constantData/100) + J5*(sellData/100)*(priceData/100) - Math.abs(J6)*(sellData/100)*(changeData/100) - Math.abs(J7)*(sellData/100)*(variableData/100))*100).toFixed(2);
+        $("#1").children("td").eq(6).html(cashUp);
+        
+        //经营现金流增加额
+        //管理现金表 五、现金及现金等价物净增加额
+        var cashMoney2 = $(".hidden_Data_cashMoney2").val();
+        var cashFlowUp = ((cashUp/100)*cashMoney2).toFixed(2);
+        $("#1").children("td").eq(7).html(cashFlowUp);
+        
+        //变化前
+        $("#1").children("td").eq(8).html(sell1);
+        $("#2").children("td").eq(3).html(zhangjia1);
+        $("#3").children("td").eq(3).html(change1);
+        $("#4").children("td").eq(3).html(variable1);
+        $("#5").children("td").eq(3).html(constant1);
+        
+        //变化后
+        var sellAfterChange = (sell1 * (1*1 + (sellLiru/100))).toFixed(2);
+        $("#1").children("td").eq(9).html(sellAfterChange);
+        
+        var priceAfterChange = (zhangjia1 * (1*1 + (zhangjiaLiru/100))).toFixed(2);
+        $("#2").children("td").eq(4).html(priceAfterChange);
+        
+        var changeAfterChange = (change1 * (1*1 + (changeLiru/100))).toFixed(2);
+        $("#3").children("td").eq(4).html(changeAfterChange);
+        
+        var variableAfterChange = (variable1 * (1*1 + (variableLiru/100))).toFixed(2);
+        $("#4").children("td").eq(4).html(variableAfterChange);
+        
+        var constantAfterChange = (constant1 * (1*1 + (constantLiru/100))).toFixed(2);
+        $("#5").children("td").eq(4).html(constantAfterChange); 
+//        popup.success('五大决策的数据生成中！请稍候...');
+//        setTimeout(function(){
+//            popup.close("asyncbox_success");
+//        },6000);
+        var mydatetime = $('#start_time').val();
+        //循环修改
+        $.post("{:U('Five/isExistFive')}",{'date':mydatetime},function(data){
+            if(data==0){
+                //存在就修改数据
+                //第一行的数据修改
+                var name = $("#1").children("td:eq(0)").text();
+                var change = $("#1").children("td:eq(1)").text();
+                var upDown = $("#1").children("td:eq(2)").text();
+                var up = $("#1").children("td:eq(3)").text();
+                var allUp = $("#1").children("td:eq(4)").text();
+                var profit = $("#1").children("td:eq(5)").text();
+                var cashUp = $("#1").children("td:eq(6)").text();
+                var cashIncrease = $("#1").children("td:eq(7)").text();
+                var before = $("#1").children("td:eq(8)").text();
+                var after = $("#1").children("td:eq(9)").text();
+                var sensitive = $("#1").children("td:eq(10)").text();
+                var cashFlow = $("#1").children("td:eq(11)").text();
+                var cashRate = $("#1").children("td:eq(12)").text();
+                var cashSensitivity = $("#1").children("td:eq(13)").text();
+                var id = $("#1").children("td:eq(14)").text();
+                $.post("{:U('Five/editFive')}",{'id':id,'change':change,'upDown':upDown,'before':before,'after':after,
+                        'sensitive':sensitive,'cashFlow':cashFlow,'cashRate':cashRate,'cashSensitivity':cashSensitivity,'up':up,
+                        'allUp':allUp,'profit':profit,'cashUp':cashUp,'cashIncrease':cashIncrease},function(data){
+
+                });
+                //第二行开始的修改
+                $("table tr:gt(1)").each(function(i){
+                    var name = $(this).children("td:eq(0)").text();
+                    var change = $(this).children("td:eq(1)").text();
+                    var upDown = $(this).children("td:eq(2)").text();
+                    var up = $("#1").children("td:eq(3)").text();
+                    var allUp = $("#1").children("td:eq(4)").text();
+                    var profit = $("#1").children("td:eq(5)").text();
+                    var cashUp = $("#1").children("td:eq(6)").text();
+                    var cashIncrease = $("#1").children("td:eq(7)").text();
+                    var before = $(this).children("td:eq(3)").text();
+                    var after = $(this).children("td:eq(4)").text();
+                    var sensitive = $(this).children("td:eq(5)").text();
+                    var cashFlow = $(this).children("td:eq(6)").text();
+                    var cashRate = $(this).children("td:eq(7)").text();
+                    var cashSensitivity = $(this).children("td:eq(8)").text();
+                    var id = $(this).children("td:eq(9)").text();
+                    $.post("{:U('Five/editFive')}",{'id':id,'change':change,'upDown':upDown,'before':before,'after':after,
+                        'sensitive':sensitive,'cashFlow':cashFlow,'cashRate':cashRate,'cashSensitivity':cashSensitivity,'up':up,
+                        'allUp':allUp,'profit':profit,'cashUp':cashUp,'cashIncrease':cashIncrease},function(data){
+                        
+                    });
+                });
+            } 
+        });
+        
+        //柱形图
+        //变化前
+        var before1 = "{$xiaozeng['sum_money']}"/10000;
+        var before2 = "{$zhangjia['sum_money']}"/10000;
+        var before3 = "{$change['sum_money']}"/10000;
+        var before4 = "{$variable['sum_money']}"/10000;
+        var before5 = "{$constant['sum_money']}"/10000;
+//        alert(before1);
+        //变化后
+        var after1 = (sellAfterChange)/10000;
+        var after2 = (priceAfterChange)/10000;
+        var after3 = (changeAfterChange)/10000;
+        var after4 = (variableAfterChange)/10000;
+        var after5 = (constantAfterChange)/10000; 
+    $(function () {  
+       $('#container').highcharts({                                           
+        chart: {                                                           
+            type: 'bar'                                                    
+        },                                                                 
+        title: {                                                           
+            text: '五大决策'                    
+        },
+        credits: {
+            enabled:false
+        },
+        exporting: {
+            enabled:false
+        },
+        subtitle: {                                                        
+            text: '变化前后对比图'                                  
+        },                                                                 
+        xAxis: {                                                           
+            categories: ['销量', '售价', '变动成本', '变动费用', '固定费用'],
+            title: {                                                       
+                text: null                                                 
+            }                                                              
+        },                                                                 
+        yAxis: {                                                           
+            min: 0,                                                        
+            title: {                                                       
+                text: '单位 (万元)',                             
+                align: 'high'                                              
+            },                                                             
+            labels: {                                                      
+                overflow: 'justify'                                        
+            }                                                              
+        },                                                                 
+        tooltip: {                                                         
+            valueSuffix: ' 万元'                                       
+        },                                                                 
+        plotOptions: {                                                     
+            bar: {                                                         
+                dataLabels: {                                              
+                    enabled: true                                          
+                }                                                          
+            }                                                              
+        },                                                                 
+        legend: {                                                          
+            layout: 'vertical',                                            
+            align: 'right',                                                
+            verticalAlign: 'top',                                          
+            x: -40,                                                        
+            y: 0,                                                        
+            floating: true,                                                
+            borderWidth: 1,                                                
+            backgroundColor: '#FFFFFF',                                    
+            shadow: true                                                   
+        },                                                                  
+        series: [{                                                         
+            name: '变化前',                                             
+            data: [before1, before2, before3, before4, before5]                                   
+        }, {                                                               
+            name: '变化后',                                             
+            data: [after1, after2, after3, after4, after5]                                  
+        }]  
+    });
+});                
+</script>
