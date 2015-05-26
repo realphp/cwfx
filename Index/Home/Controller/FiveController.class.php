@@ -22,9 +22,6 @@ class FiveController extends CommonController {
         }
         //根据公司编号获取五大决策的内容
         $con = D('Fivedata','Service')->getFiveDataList($cnum,$fid,$date);
-        if(!$con){
-            $this->error($date.'没有数据');
-        }
         $item = array();
         foreach ($con as $k => $v) {
             $item[$v['f_id']]=$v;

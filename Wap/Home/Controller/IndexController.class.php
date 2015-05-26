@@ -89,7 +89,7 @@ class IndexController extends CommonController {
         $F24 = $guanlifeiyong * $constantData;
         $C8 = $F24 / $benqijinglirun;
         
-        //变化后净利润-
+        //变化后净利润
         $after1 = $benqijinglirun*(1+round($C4,4));
         $after2 = $benqijinglirun*(1+round($C5,4));
         $after3 = $benqijinglirun*(1+round($C6,4));

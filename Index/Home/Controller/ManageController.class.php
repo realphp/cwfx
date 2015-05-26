@@ -20,7 +20,7 @@ class ManageController extends CommonController {
         $result = D('Massets','Service')->getMassetsList();
         //根据公司编号获取资产负债表的内容
         $con = D('Rich', 'Service')->getAllRich($cnum, $date);
-        if (!$con) {
+        if (!$con&&$date) {
             $this->error($date . '没有数据');
         }
         //========================================================================
@@ -433,7 +433,7 @@ class ManageController extends CommonController {
         $result = D('Minterest','Service')->getMinterestList();
         //根据公司编号获取标准损益表的内容
         $con = D('Rate', 'Service')->getAllRate($cnum, $date);
-        if (!$con) {
+        if (!$con&&$date) {
             $this->error($date . '没有数据');
         }
         $item=array();
@@ -1166,7 +1166,7 @@ class ManageController extends CommonController {
         }
         //根据公司编号获取现金流量表的内容
         $con = D('Flow', 'Service')->getFlowList($cnum, $cid, $date);
-        if (!$con) {
+        if (!$con&&$date) {
             $this->error($date . '没有数据');
         }
 

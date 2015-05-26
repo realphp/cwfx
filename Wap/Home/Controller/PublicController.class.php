@@ -90,7 +90,7 @@ class PublicController extends CommonController {
      */
     public function logout() {
         D('Admin', 'Service')->logout();
-        re0direct(U('Public/indexLogin'));
+        redirect(U('Public/indexLogin'));
     }
 
     /**

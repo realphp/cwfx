@@ -53,7 +53,7 @@ function is_mobile(){
 }
 
 
-if(!is_mobile()){ //跳转至wap分组
+if(is_mobile()){ //跳转至wap分组
     define('APP_NAME', 'Index');
     define('APP_PATH', './Index/');
 }else{
