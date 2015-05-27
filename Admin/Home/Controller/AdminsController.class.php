@@ -11,7 +11,7 @@ class AdminsController extends CommonController {
      * @return
      */
     public function index() {
-        $where = "is_super=0";
+        $where = "is_super=1";
         $result = $this->getPagination('Admin',$where,$fields,'id desc');
 
         $this->assign('admins', $result['data']);
