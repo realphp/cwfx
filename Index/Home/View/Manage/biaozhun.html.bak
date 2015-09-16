@@ -1,0 +1,252 @@
+<script type="text/javascript" src="__PUBLIC__/date/WdatePicker.js"></script>
+<link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
+<div class="Item hr">
+    <span class="fr">
+        请选择查询日期：<input name="start_time" id="choose_time" class="time input" size="20" value='{$dateVal}' onfocus="WdatePicker({dateFmt:'yyyy-MM'})">
+        <a class="btn submit" onClick="filterByGuanBiaoTime()">查询</a>
+        <a class="btn submit" href="{:U('Manage/excelBiaozhun',array('date'=>$dateVal))}">导出</a>
+<!--        <form id="form1" style="float: left;" action="{:U('Manage/historyBiaozhun')}" enctype="multipart/form-data" method="post" runat="server">
+            日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <input class="btn submit" type="submit" value="查询历史">
+        </form>-->
+        日期：<input id="start_time" class=" time input" type="text"onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
+            <input id="stop_time" class=" time input" type="text" value="{$_GET['edate']}" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
+            <a class="btn submit" onClick="chooseTime()">查询历史</a>
+    </span>
+    <div class="current">管理损益表</div>
+</div>
+    <table id="dd" width="60%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+        <thead>
+            <tr>
+                <td>名称</td>
+                <td>本期发生额</td>
+                <td>本年累计数</td>
+                <td>比率分析</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="interests" id="interest" key="k">
+            <tr id="{$interest['id']}" >
+                <td style="display: none;">{$interest['id']}</td>
+                <td>{$interest['name']}</td>
+                <td align="center"  class="edit" aid ="{$interest['id']}" fd='now_money'>
+                    <if condition='$interest["par_name"] eq "interest"'>{$interest['rate']['now_money']}
+                        <elseif condition='$interest["par_name"] eq "param"'/>{$interest['entry']['now_money']}
+                    </if>
+                </td>
+                <td align="center" class="edit" aid ="{$interest['id']}" fd='sum_money'>
+                    <if condition='$interest["par_name"] eq "interest"'>{$interest['rate']['sum_money']}
+                        <elseif condition='$interest["par_name"] eq "param"'/>{$interest['entry']['sum_money']}
+                    </if>
+                </td>
+                <td align="center"></td>
+                <td style="display: none;">{$k}</td>
+            </tr>
+            </volist>
+            
+        </tbody>
+    </table>
+<input type="hidden" id='sell1' value="{$sell1}"/>
+<input type="hidden" id='sell2' value="{$sell2}"/>
+
+<input type="hidden" id='manager1' value="{$manager1}"/>
+<input type="hidden" id='manager2' value="{$manager2}"/>
+
+<style type="text/css">  
+input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+</style> 
+<script type="text/javascript">
+    function filterByGuanBiaoTime(){
+	var start = $( "#choose_time" ).val();
+        var url   = "Manage/biaozhun/date/"+start;
+        
+	window.location.href="__APP__/"+url;
+    }
+    function chooseTime(){
+        var begintime_ms = Date.parse(new Date($.trim($("#start_time").val())));
+        var endtime_ms = Date.parse(new Date($.trim($("#stop_time").val())));
+           if(!begintime_ms || !endtime_ms){
+             popup.error("请选择时间段");
+                return false;
+        }
+//        alert(begintime_ms);
+        endtime_ms += 24*60*60*1000;
+        if(endtime_ms-begintime_ms>6*30*24*60*60*1000){
+                popup.error("一次最多可查询6个月的数据！");
+                return false;
+        }
+        if(begintime_ms > endtime_ms){
+                popup.error("开始时间不能小于结束时间");
+                return false;
+        }
+        var begin = $("#start_time").val();
+        var end = $("#stop_time").val()
+        var urls   = "Manage/historyBiaozhun/sdate/"+begin+"/edate/"+end;
+        window.location.href="__APP__/"+urls;
+    }
+    $(document).ready(function(){ 
+        //计算主营业务净收入的值
+        var zhuyingyewushouru = $("#1").children("td").eq(2).html();
+        var jianyingyeshuijin = $("#3").children("td").eq(2).html();
+        var zhuyingjingshouru = (zhuyingyewushouru - jianyingyeshuijin).toFixed(2);
+        $("#4").children("td").eq(2).html(zhuyingjingshouru);
+        
+        var zhuyingyewushouru2 = $("#1").children("td").eq(3).html();
+        var jianyingyeshuijin2 = $("#3").children("td").eq(3).html();
+        var zhuyingjingshouru2 = (zhuyingyewushouru2 - jianyingyeshuijin2).toFixed(2);
+        $("#4").children("td").eq(3).html(zhuyingjingshouru2);
+        
+        var zhuyingjingshouru = $("#4").children("td").eq(2).html();
+        var zhijiechengben = $("#5").children("td").eq(2).html();
+        var maoyi = (zhuyingjingshouru - zhijiechengben).toFixed(2);
+        $("#6").children("td").eq(2).html(maoyi);//计算出毛益的值  
+        
+        var zhuyingjingshouru2 = $("#4").children("td").eq(3).html();
+        var zhijiechengben2 = $("#5").children("td").eq(3).html();
+        var maoyi2 = (zhuyingjingshouru2 - zhijiechengben2).toFixed(2);
+        $("#6").children("td").eq(3).html(maoyi2);//计算出毛益的值 2
+        
+        var xiaoshoushouru = $("#8").children("td").eq(2).html();
+        var xiaoshouliang = $("#9").children("td").eq(2).html();
+        var bian = (xiaoshoushouru*1 + xiaoshouliang*1).toFixed(2);
+        $("#7").children("td").eq(2).html(bian);//计算出变动营业费用的值
+        
+        var xiaoshoushouru2 = $("#8").children("td").eq(3).html();
+        var xiaoshouliang2 = $("#9").children("td").eq(3).html();
+        var bian2 = (xiaoshoushouru2*1 + xiaoshouliang2*1).toFixed(2);
+        $("#7").children("td").eq(3).html(bian2);//计算出变动营业费用的值
+        
+        var jingyinggongxian = (maoyi - bian).toFixed(2);
+        $("#10").children("td").eq(2).html(jingyinggongxian);//计算出经营贡献的值
+        var jingyinggongxian2 = (maoyi2 - bian2).toFixed(2);
+        $("#10").children("td").eq(3).html(jingyinggongxian2);//计算出经营贡献的值
+        
+        var sell1 = $("#sell1").val();
+        $("#12").children("td").eq(2).html(sell1);//计算销售费用的值
+        
+        var sell2 = $("#sell2").val();
+        $("#12").children("td").eq(3).html(sell2);//计算销售费用的值
+        
+        var manager1 = $("#manager1").val();
+        $("#13").children("td").eq(2).html(manager1);//计算管理费用的值
+        
+        var manager2 = $("#manager2").val();
+        $("#13").children("td").eq(3).html(manager2);//计算管理费用的值
+        
+        var xiaoshoufeiyong = $("#12").children("td").eq(2).html();
+        var guanlifeiyong = $("#13").children("td").eq(2).html();
+        var zhejiufeiyong = $("#14").children("td").eq(2).html();
+        var gu = (xiaoshoufeiyong*1 + guanlifeiyong*1+ zhejiufeiyong*1).toFixed(2);
+        $("#11").children("td").eq(2).html(gu);//计算固定营业费用的值
+        
+        var xiaoshoufeiyong2 = $("#12").children("td").eq(3).html();
+        var guanlifeiyong2 = $("#13").children("td").eq(3).html();
+        var zhejiufeiyong2 = $("#14").children("td").eq(3).html();
+        var gu2 = (xiaoshoufeiyong2*1 + guanlifeiyong2*1+ zhejiufeiyong2*1).toFixed(2);
+        $("#11").children("td").eq(3).html(gu2);//计算固定营业费用的值
+        
+        var yingyelirun = (jingyinggongxian - gu).toFixed(2);
+        $("#15").children("td").eq(2).html(yingyelirun);//计算营业利润的值
+        
+        var yingyelirun2 = (jingyinggongxian2 - gu2).toFixed(2);
+        $("#15").children("td").eq(3).html(yingyelirun2);//计算营业利润的值
+        
+        var caiwu = $("#16").children("td").eq(2).html();
+        var shuiqianyingyu = (yingyelirun - caiwu).toFixed(2);
+        $("#17").children("td").eq(2).html(shuiqianyingyu);//计算税前盈余
+        
+        var caiwu2 = $("#16").children("td").eq(3).html();
+        var shuiqianyingyu2 = (yingyelirun2 - caiwu2).toFixed(2);
+        $("#17").children("td").eq(3).html(shuiqianyingyu2);//计算税前盈余
+        
+        var yingyewaishouzhi = $("#18").children("td").eq(2).html();
+        var butieshouru = $("#19").children("td").eq(2).html();
+        var touzishouyi = $("#20").children("td").eq(2).html();
+        var gongyun = $("#21").children("td").eq(2).html();
+        var suodeshui = $("#22").children("td").eq(2).html();
+        var benqijinglirun = (shuiqianyingyu*1 + yingyewaishouzhi*1 + butieshouru*1 + touzishouyi*1 + gongyun*1 - suodeshui).toFixed(2);
+        $("#23").children("td").eq(2).html(benqijinglirun);//计算本期净利润
+//        alert(yingyewaishouzhi - suodeshui);
+        var yingyewaishouzhi2 = $("#18").children("td").eq(3).html();
+        var butieshouru2 = $("#19").children("td").eq(3).html();
+        var touzishouyi2 = $("#20").children("td").eq(3).html();
+        var gongyun2 = $("#21").children("td").eq(3).html();
+        var suodeshui2 = $("#22").children("td").eq(3).html();
+        var benqijinglirun2 = (shuiqianyingyu2*1 + yingyewaishouzhi2*1 + butieshouru2*1 + touzishouyi2*1 + gongyun2*1 - suodeshui2).toFixed(2);
+        $("#23").children("td").eq(3).html(benqijinglirun2);//计算本期净利润
+        
+        if(zhuyingjingshouru2!=0){
+        var zhuyingbi = ((zhuyingjingshouru2/zhuyingjingshouru2)*100).toFixed(2) + "%";
+        $("#4").children("td").eq(4).html(zhuyingbi);//计算主营业务净收入的比率
+        var maoyibi = ((maoyi2/zhuyingjingshouru2)*100).toFixed(2) + "%";
+        $("#6").children("td").eq(4).html(maoyibi);//计算毛益的比率
+        
+        var bianbi = ((bian2/zhuyingjingshouru2)*100).toFixed(2) + "%";
+        $("#7").children("td").eq(4).html(bianbi);//计算毛益的比率
+        
+        var jingyingbi = ((jingyinggongxian2/zhuyingjingshouru2)*100).toFixed(2) + "%";
+        $("#10").children("td").eq(4).html(jingyingbi);//计算经营贡献的比率
+        
+        var yingyebi = ((yingyelirun2/zhuyingjingshouru2)*100).toFixed(2) + "%";
+        $("#15").children("td").eq(4).html(yingyebi);//计算营业利润的比率
+        
+        var shuiqianbi = ((shuiqianyingyu2/zhuyingjingshouru2)*100).toFixed(2) + "%";
+        $("#17").children("td").eq(4).html(shuiqianbi);//计算税前盈余的比率
+        
+        var benqibi = ((benqijinglirun2/zhuyingjingshouru2)*100).toFixed(2) + "%";
+        $("#23").children("td").eq(4).html(benqibi);//计算本期净利润的比率
+    }
+        
+        var aUrl = window.location.href;
+        var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
+        if(b==="biaozhun.html"){
+            var myDate = new Date();
+//            myDate.getYear();        //获取当前年份(2位)
+            myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+            if(month<=8){
+                month = '0' + (month*1 + 1);
+            }else{
+                month = month*1 + 1;
+            }
+//            console.log(myDate.getFullYear()+'-'+month);
+            b = myDate.getFullYear()+'-'+month;
+        }
+        popup.success('管理损益表的数据生成中！请稍候...');
+        setTimeout(function(){
+            popup.close("asyncbox_success");
+        },6000);
+        $.post("{:U('Manage/isExistMrate')}",{'date':b},function(data){
+            if(data==0){
+                //存在就修改数据
+                $("table tr:gt(0)").each(function(i){
+                    var miId = $(this).children("td:eq(0)").text();
+                    var miName = $(this).children("td:eq(1)").text();
+                    var miStart = $(this).children("td:eq(2)").text();
+                    var miEnd = $(this).children("td:eq(3)").text();
+                    var miRate = $(this).children("td:eq(4)").text();
+                    var miOrder = $(this).children("td:eq(5)").text();
+                    $.post("{:U('Manage/editMrate')}",{'mi_id':miId,'name':miName,'now_money':miStart,'sum_money':miEnd,'rate':miRate,'date':b,'order_id':miOrder},function(data){
+                        
+                    });
+                });
+            }
+            if(data==1){
+                //不存在就添加数据
+                $("table tr:gt(0)").each(function(i){
+                    var miId = $(this).children("td:eq(0)").text();
+                    var miName = $(this).children("td:eq(1)").text();
+                    var miStart = $(this).children("td:eq(2)").text();
+                    var miEnd = $(this).children("td:eq(3)").text();
+                    var miRate = $(this).children("td:eq(4)").text();
+                    var miOrder = $(this).children("td:eq(5)").text();
+                    $.post("{:U('Manage/addMrate')}",{'mi_id':miId,'name':miName,'now_money':miStart,'sum_money':miEnd,'rate':miRate,'date':b,'order_id':miOrder},function(data){
+                        
+                    });
+                });
+            } 
+        });
+        
+    });  
+</script>

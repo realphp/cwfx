@@ -185,4 +185,14 @@ class FlowService extends CommonService {
     protected function getModelName() {
         return 'Flow';
     }
+
+    public function getFlowZi($cnum, $date, $inter) {
+        $map['cnum'] = $cnum;
+        $map['cash_id'] = $inter;
+        $map['date'] = array('like', $date . '%');
+        $rate = $this->getM();
+        $result = $rate->where($map)->getField('money');
+        return $result;
+    }
+
 }

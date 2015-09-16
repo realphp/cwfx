@@ -249,10 +249,12 @@ function selectmonth(type, obj, url, where) {
             var json = $.parseJSON(data);
             if (json) {
                 myChart(parseFloat(json.month), parseFloat(json.lastMonth), parseFloat(json.target));
+                $(obj).siblings('a').removeClass('on');
+                $(obj).addClass('on');
+            } else {
+                alert('抱歉，该月没有添加数据');
             }
 
-            $(obj).siblings('a').removeClass('on');
-            $(obj).addClass('on');
         });
     }
 }
@@ -264,7 +266,7 @@ function higthChatsColumn(qianyuji, houyuji, qiancash, houcash) {
             type: 'column'
         },
         title: {
-            text: '五大决策',
+            text: '',
             margin: 50
         },
         credits: {

@@ -28,8 +28,12 @@
 <include file="Public:footer"/>
 
 <script type="text/javascript">
-    var month = {$result['month']};
-            var lastMonth = {$result['lastMonth']};
-            var target = {$result['target']};
-    myChart(month, lastMonth, target);
+    var month = "{$result['month']}";
+    var lastMonth = "{$result['lastMonth']}";
+    var target = "{$result['target']}";
+    if (month) {
+        myChart(parseFloat(month), parseFloat(lastMonth), parseFloat(target));
+    } else {
+        alert('抱歉，该月没有添加数据');
+    }
 </script>

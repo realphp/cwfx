@@ -20,9 +20,6 @@ class ManageController extends CommonController {
         $result = D('Massets','Service')->getMassetsList();
         //根据公司编号获取资产负债表的内容
         $con = D('Rich', 'Service')->getAllRich($cnum, $date);
-        if (!$con&&$date) {
-            $this->error($date . '没有数据');
-        }
         //========================================================================
          //根据公司编号获取标准损益表的内容
         $con1 = D('Rate','Service')->getAllRate($cnum,$date);
@@ -60,6 +57,7 @@ class ManageController extends CommonController {
         }
         $this->assign('dateVal', $dateVal);
         $this->assign('assets', $result);
+        $this->assign('jun_list', $con);
         $this->display();
     }
     
@@ -433,9 +431,10 @@ class ManageController extends CommonController {
         $result = D('Minterest','Service')->getMinterestList();
         //根据公司编号获取标准损益表的内容
         $con = D('Rate', 'Service')->getAllRate($cnum, $date);
-        if (!$con&&$date) {
-            $this->error($date . '没有数据');
-        }
+//        dump($con);die;
+        // if (!$con) {
+        //     $this->error($date . '没有数据');
+        // }
         $item=array();
         foreach($con as $k=>$v){
             $item[$v['interest_id']]=$v;
@@ -444,9 +443,39 @@ class ManageController extends CommonController {
                 $interest9 = $v['now_money'];
                 $interest9s = $v['sum_money'];
             }
+            if($v['interest_id'] == '10'){
+                $interest10 = $v['now_money'];
+                $interest10s = $v['sum_money'];
+            }
             if($v['interest_id'] == '12'){
                 $interest12 = $v['now_money'];
                 $interest12s = $v['sum_money'];
+            }
+            if($v['interest_id'] == '13'){
+                $interest13 = $v['now_money'];
+                $interest13s = $v['sum_money'];
+                $this->assign('jun_changfa_m',$v['now_money']);
+                $this->assign('jun_changfa_y',$v['sum_money']);
+            }
+            if($v['interest_id'] == '14'){
+                $interest14 = $v['now_money'];
+                $interest14s = $v['sum_money'];
+            }
+            if($v['interest_id'] == '15'){
+                $this->assign('jun_changsun_m',$v['now_money']);
+                $this->assign('jun_changsun_y',$v['sum_money']);
+            }
+            if($v['interest_id'] == '17'){
+                $this->assign('jun_qita_m',$v['now_money']);
+                $this->assign('jun_qita_y',$v['sum_money']);
+            }
+            if($v['interest_id'] == '23'){
+                $this->assign('jun_yiqiansunyi_m',$v['now_money']);
+                $this->assign('jun_yiqiansunyi_y',$v['sum_money']);
+            }
+            if($v['interest_id'] == '3'){
+                $this->assign('jun_zherang_m',$v['now_money']);
+                $this->assign('jun_zherang_y',$v['sum_money']);
             }
         }
         
@@ -480,18 +509,18 @@ class ManageController extends CommonController {
                 $param9s = $v['sum_money'];
             }
         }
-        $paramhe = $param4+$param5+$param8;
-        $paramhes = $param4s+$param5s+$param8s;
+        $paramhe = $param4+$param5;
+        $paramhes = $param4s+$param5s;
         //销售费用 
-        $sellold1  = $interest9 - $paramhe;
-        $sellold2  = $interest9s - $paramhes;
+        $sellold1  = $interest9 - $paramhe-$interest10;
+        $sellold2  = $interest9s - $paramhes-$interest10s;
         $sell1 = number_format($sellold1,2,'.','');
         $sell2 = number_format($sellold2,2,'.','');
         $this->assign('sell1', $sell1);
         $this->assign('sell2', $sell2);
         //管理费用
-        $managerold1 = $interest12 - $param9;
-        $managerold2 = $interest12s - $param9s;
+        $managerold1 = $interest12 - $interest13-$interest14;
+        $managerold2 = $interest12s - $interest13s-$interest14s;
         $manager1 = number_format($managerold1,2,'.','');
         $manager2 = number_format($managerold2,2,'.','');
         $this->assign('manager1', $manager1);

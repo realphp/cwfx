@@ -1,0 +1,21 @@
+<div class="Item hr">
+    <div class="current">页面统计</div>
+</div>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+        <thead>
+            <tr>
+                <td>统计页面</td>
+                <td>pv(访问量)</td>
+                <td>uv(用户量)</td>
+            </tr>
+        </thead>
+        <tbody>
+            <volist name="list" id="vo">
+            <tr align="center">
+                <td align="left"><a href="{$vo.url}" target="_blank">{$vo.url}</a></td>
+                <td>{$vo.pv}</td>
+                <td>{$vo.uv}</td>
+            </tr>
+            </volist>
+        </tbody>
+    </table>

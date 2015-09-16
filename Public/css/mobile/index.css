@@ -36,6 +36,7 @@ input {
     transition: all 0.2s ease 0s;
     width: 50px;
     text-align: center;
+    margin-left:12px;
 }
 .btn {
     background: none repeat scroll 0 0 #1b75b6;

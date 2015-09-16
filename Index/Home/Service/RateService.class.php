@@ -78,9 +78,9 @@ class RateService extends CommonService {
     }
     
     //获取资产减值损失
-    public function getRateZi($cnum,$date){
+    public function getRateZi($cnum,$date,$inter=15){
         $map['cnum'] = $cnum;
-        $map['interest_id'] = 15;
+        $map['interest_id'] = $inter;
         $map['date'] = array('like',$date.'%');
         $rate = $this->getM();
         $result = $rate->where($map)->select();

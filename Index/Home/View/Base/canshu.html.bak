@@ -82,7 +82,24 @@
                     <div class="fl kong" ><input type="text" name="liang[now_money]" value="" class="ipt nickname" /></div>
                     <div class="fl"><input type="text" name="liang[sum_money]" value="" class="ipt nickname" /></div>
                 </li>
-           
+                <li>
+                    <strong>2.销售部门的折旧费用  <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="sell[param_id]" value="8"/>
+                    <div class="fl kong" ><input type="text" name="sell[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="sell[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li style="border-bottom:1px solid #ddd;">
+                    <strong>3.管理部门的折旧费用 <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="man[param_id]" value="9"/>
+                    <div class="fl kong" ><input type="text" name="man[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="man[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
+                <li>
+                    <strong>现金费用比 <font color="#ff0000">*</font></strong>
+                    <input type="hidden" name="bi[param_id]" value="10"/>
+                    <div class="fl kong" ><input type="text" name="bi[now_money]" value="" class="ipt nickname" /></div>
+                    <div class="fl"><input type="text" name="bi[sum_money]" value="" class="ipt nickname" /></div>
+                </li>
                 <li style="text-align:center;">
                     <a class="btn submit"  onClick="addCanshu()">添加</a>
                     <a class="btn submit"  onClick="hideAdd()">取消</a>
@@ -97,7 +114,6 @@
     <div class="edit_dialog" style="display:none;">
         <div id="HTitle" class="dialog_title">修改数据</div>
         <form id="edit_data">
-                    <input type="hidden" name="date" value="{$dateVal}"/>
             <ul class="list">
                 <li style="margin:0 auto;font-size: 16px;height:20px;line-height: 20px;">
                         <strong></strong>
@@ -119,7 +135,7 @@
                     </td>
                 </tr>-->
                 
-                <if condition="($entry['id'] neq '3') AND ($entry['id'] neq '6') AND ($entry['id'] lt '7')">
+                <if condition="($entry['id'] neq '3') AND ($entry['id'] neq '6') AND ($entry['id'] neq '7')">
                     <li style="border-bottom:1px solid #ddd;" >
                         <strong>{$entry['name']} <font color="#ff0000">*</font></strong>
                         <input type="hidden" name="{$entry['id']}[id]" value="{$entry['entry']['id']}"/>

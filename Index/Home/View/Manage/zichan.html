@@ -2,94 +2,145 @@
 <link href="__PUBLIC__/date/skin/WdatePicker.css" rel="sheetstyle">
 <div class="Item hr">
     <span class="fr">
-        请选择查询日期：<input name="start_time" id="choose_time" class="time input" size="20" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" size="10" value="{$dateVal}">
+        请选择查询日期：<input name="start_time" id="choose_time" class="time input" size="20" onfocus="WdatePicker({dateFmt: 'yyyy-MM'})" size="10" value="{$dateVal}">
         <a class="btn submit" onClick="filterByGuanZiTime()">查询</a>
-        <a class="btn submit" href="{:U('Manage/excelFuzhai',array('date'=>$dateVal))}">导出</a>
-        日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/> ---
-            <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM'})"/>
-            <a class="btn submit" onClick="chooseTime()">查询历史</a>
+        <a class="btn submit" href="{:U('Manage/excelFuzhai',array(date=>$dateVal))}">导出</a>
+        日期：<input id="start_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt: 'yyyy-MM'})"/> ---
+        <input id="stop_time" class=" time input" type="text" onFocus="WdatePicker({dateFmt: 'yyyy-MM'})"/>
+        <a class="btn submit" onClick="chooseTime()">查询历史</a>
     </span>
     <div class="current">管理资产负债表</div>
 </div>
-    <table id="dd" width="50%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
-        <thead>
-            <tr>
-                <td>资金占用</td>
-                <td>年初数</td>
-                <td>期末数</td>
-            </tr>
-        </thead>
-        <tbody>
-            <volist name="assets" id="asset" >
-            <if condition='($i lt 26)'>
+<table id="dd" width="50%" border="0" cellspacing="0" cellpadding="0" class="tab"  style="float: left">
+    <thead>
+        <tr>
+            <td>资金占用</td>
+            <td>年初数</td>
+            <td>期末数</td>
+        </tr>
+    </thead>
+    <tbody>
+    <volist name="assets" id="asset" >
+        <if condition='($i lt 26)'>
             <tr align="center"  <if condition='empty($asset["par_name"])'>style="background:#ccc;"</if>>
-                <td style="display: none;">{$asset['id']}</td>    
-                <td>{$asset['name']}</td>
-                <td class="edit" id ="{$asset['id']}" fd='start_money'>{$asset['rich']['start_money']}</td>
-                <td class="edit" id ="{$asset['id']}e" fd='end_money'>{$asset['rich']['end_money']}</td>
+            <td style="display: none;">{$asset['id']}</td>    
+            <td>{$asset['name']}</td>
+            <td class="edit" id ="{$asset['id']}" fd='start_money'>{$asset['rich']['start_money']}</td>
+            <td class="edit" id ="{$asset['id']}e" fd='end_money'>{$asset['rich']['end_money']}</td>
             </tr>
-            </if>
-            </volist>
-        </tbody>
-    </table>
-    <table width="50%" border="0" cellspacing="0" cellpadding="0" class="tab" style="float: left">
-        <thead>
-            <tr>
-                <td>资金来源</td>
-                <td>年初数</td>
-                <td>期末数</td>
-            </tr>
-        </thead>
-        <tbody>
-            <volist name="assets" id="asset" >
-            <if condition='($i gt 25) and ($i lt 43)'>
+        </if>
+    </volist>
+</tbody>
+</table>
+<table width="50%" border="0" cellspacing="0" cellpadding="0" class="tab" style="float: left">
+    <thead>
+        <tr>
+            <td>资金来源</td>
+            <td>年初数</td>
+            <td>期末数</td>
+        </tr>
+    </thead>
+    <tbody>
+    <volist name="assets" id="asset" >
+        <if condition='($i gt 25) and ($i lt 43)'>
             <tr align="center"  <if condition='empty($asset["par_name"])'>style="background:#ccc;"</if>>
-                <td style="display: none;">{$asset['id']}</td> 
-                <td>{$asset['name']}</td>
-                <td class="edit" id ="{$asset['id']}" fd='start_money'>{$asset['rich']['start_money']}</td>
-                <td class="edit" id ="{$asset['id']}e" fd='end_money'>{$asset['rich']['end_money']}</td>
+            <td style="display: none;">{$asset['id']}</td> 
+            <td>{$asset['name']}</td>
+            <td class="edit" id ="{$asset['id']}" fd='start_money'>{$asset['rich']['start_money']}</td>
+            <td class="edit" id ="{$asset['id']}e" fd='end_money'>{$asset['rich']['end_money']}</td>
             </tr>
-            </if>
-            </volist>
-        </tbody>
-    </table>
+        </if>
+    </volist>
+</tbody>
+</table>
 <style type="text/css">  
-input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
+    input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
 </style> 
 <script type="text/javascript">
-    function filterByGuanZiTime(){
-	var start = $( "#choose_time" ).val();
-        var url   = "Manage/zichan/date/"+start;
+    function filterByGuanZiTime() {
+        var start = $("#choose_time").val();
+        var url = "Manage/zichan/date/" + start;
 //            alert("__CONTROLLER__"+url);
-        
-	window.location.href="__APP__/"+url;
+
+        window.location.href = "__APP__/" + url;
     }
-    function chooseTime(){
+    function chooseTime() {
         var begintime_ms = Date.parse(new Date($.trim($("#start_time").val())));
         var endtime_ms = Date.parse(new Date($.trim($("#stop_time").val())));
-        if(!begintime_ms || !endtime_ms){
-             popup.error("请选择时间段");
-                return false;
+        if (!begintime_ms || !endtime_ms) {
+            popup.error("请选择时间段");
+            return false;
         }
 //        alert(begintime_ms);
-        endtime_ms += 24*60*60*1000;
-        if(endtime_ms-begintime_ms>6*30*24*60*60*1000){
-                popup.error("一次最多可查询6个月的数据！");
-                return false;
+        endtime_ms += 24 * 60 * 60 * 1000;
+        if (endtime_ms - begintime_ms > 6 * 30 * 24 * 60 * 60 * 1000) {
+            popup.error("一次最多可查询6个月的数据！");
+            return false;
         }
-        if(begintime_ms > endtime_ms){
-                popup.error("开始时间不能小于结束时间");
-                return false;
+        if (begintime_ms > endtime_ms) {
+            popup.error("开始时间不能小于结束时间");
+            return false;
         }
         var begin = $("#start_time").val();
         var end = $("#stop_time").val();
-        var urls   = "Manage/historyZichan/sdate/"+begin+"/edate/"+end;
-        window.location.href="__APP__/"+urls;
+        var urls = "Manage/historyZichan/sdate/" + begin + "/edate/" + end;
+        window.location.href = "__APP__/" + urls;
     }
-    $(document).ready(function(){ 
+    $(document).ready(function () {
+
+        var jun_jiaoyi = "<tr align='center'><td style='display: none;'>43</td><td>交易性金融资产</td><td id='43'>{$jun_list[1]['start_money']}</td><td>{$jun_list[1]['end_money']}</td></tr>";
+        var jun_yguji = "<tr align='center'><td style='display: none;'>44</td><td>应收股利</td><td id='44'>{$jun_list[3]['start_money']}</td><td>{$jun_list[3]['end_money']}</td></tr>";
+        var jun_ylixi = "<tr align='center'><td style='display: none;'>45</td><td>应收利息</td><td id='45'>{$jun_list[4]['start_money']}</td><td>{$jun_list[4]['end_money']}</td></tr>";
+        var jun_ybutie = "<tr align='center'><td style='display: none;'>46</td><td>应收补贴款</td><td id='46'>{$jun_list[8]['start_money']}</td><td>{$jun_list[8]['end_money']}</td></tr>";
+        var jun_daitan = "<tr align='center'><td style='display: none;'>47</td><td>待摊费用</td><td id='47'>{$jun_list[10]['start_money']}</td><td>{$jun_list[10]['end_money']}</td></tr>";
+        var jun_czaiquan = "<tr align='center'><td style='display: none;'>48</td><td>一年内到期的长期债权投资</td><td id='48'>{$jun_list[11]['start_money']}</td><td>{$jun_list[11]['end_money']}</td></tr>";
+        var jun_qitaliu = "<tr align='center'><td style='display: none;'>49</td><td>其他流动资产</td><td id='49'>{$jun_list[12]['start_money']}</td><td>{$jun_list[12]['end_money']}</td></tr>";
+        $('#2').parent('tr').after(jun_jiaoyi + jun_yguji + jun_ylixi + jun_ybutie + jun_daitan + jun_czaiquan + jun_qitaliu);
+        var jun_changqigu = "<tr align='center'><td style='display: none;'>50</td><td>长期股权投资</td><td id='50'>{$jun_list[14]['start_money']}</td><td>{$jun_list[14]['end_money']}</td></tr>";
+        var jun_changqizai = "<tr align='center'><td style='display: none;'>51</td><td>长期债权投资</td><td id='51'>{$jun_list[15]['start_money']}</td><td>{$jun_list[15]['end_money']}</td></tr>";
+        var jun_changqihe = "<tr align='center'><td style='display: none;'>52</td><td>长期投资合计</td><td id='52'>{$jun_list[17]['start_money']}</td><td>{$jun_list[17]['end_money']}</td></tr>";
+        var jun_guziyuan = "<tr align='center'><td style='display: none;'>53</td><td>固定资产原价</td><td id='53'>{$jun_list[18]['start_money']}</td><td>{$jun_list[18]['end_money']}</td></tr>";
+        var jun_liejizhe = "<tr align='center'><td style='display: none;'>54</td><td>减：累计折旧</td><td id='54'>{$jun_list[19]['start_money']}</td><td>{$jun_list[19]['end_money']}</td></tr>";
+        var jun_14 = "<tr align='center'><td style='display: none;'>55</td><td>固定资产净值</td><td id='55'>{$jun_list[20]['start_money']}</td><td>{$jun_list[20]['end_money']}</td></tr>";
+        var jun_21 = "<tr align='center'><td style='display: none;'>56</td><td>减：固定资产减值准备</td><td id='56'>{$jun_list[21]['start_money']}</td><td>{$jun_list[21]['end_money']}</td></tr>";
+        var jun_22 = "<tr align='center'><td style='display: none;'>57</td><td>固定资产净值</td><td id='57'>{$jun_list[22]['start_money']}</td><td>{$jun_list[22]['end_money']}</td></tr>";
+        var jun_23 = "<tr align='center'><td style='display: none;'>58</td><td>工程物资</td><td id='58'>{$jun_list[23]['start_money']}</td><td>{$jun_list[23]['end_money']}</td></tr>";
+//        var jun_24 = "<tr align='center'><td style='display: none;'>59</td><td>在建工程</td><td id='59'>{$jun_list[24]['start_money']}</td><td>{$jun_list[24]['end_money']}</td></tr>";
+        var jun_25 = "<tr align='center'><td style='display: none;'>60</td><td>固定资产清理</td><td id='60'>{$jun_list[25]['start_money']}</td><td>{$jun_list[25]['end_money']}</td></tr>";
+        var jun_26 = "<tr align='center'><td style='display: none;'>61</td><td>固定资产合计</td><td id='61'>{$jun_list[26]['start_money']}</td><td>{$jun_list[26]['end_money']}</td></tr>";
+        $('#8').parent('tr').after(jun_changqigu + jun_changqizai + jun_changqihe + jun_guziyuan + jun_liejizhe + jun_14 + jun_21 + jun_22 + jun_23 + jun_25 + jun_26);
+
+        var jun_28 = "<tr align='center'><td style='display: none;'>62</td><td>长期待摊费用</td><td id='62'>{$jun_list[28]['start_money']}</td><td>{$jun_list[28]['end_money']}</td></tr>";
+        var jun_29 = "<tr align='center'><td style='display: none;'>63</td><td>其他长期资产</td><td id='63'>{$jun_list[29]['start_money']}</td><td>{$jun_list[29]['end_money']}</td></tr>";
+        var jun_30 = "<tr align='center' bgcolor='#ccc'><td style='display: none;'>64</td><td>无形资产及其他资产合计</td><td id='64'>{$jun_list[30]['start_money']}</td><td>{$jun_list[30]['end_money']}</td></tr>";
+        var jun_32 = "<tr align='center'><td style='display: none;'>65</td><td>递延所得税资产</td><td id='65'>{$jun_list[32]['start_money']}</td><td>{$jun_list[32]['end_money']}</td></tr>";
+        $('#13').parent('tr').after(jun_28 + jun_29 + jun_30 + jun_32);
+
+        $('#11,#32').parent('tr').hide();
+
+        var jun_44 = "<tr align='center'><td style='display: none;'>66</td><td>其他应交款</td><td id='66'>{$jun_list[44]['start_money']}</td><td>{$jun_list[44]['end_money']}</td></tr>";
+        $('#22').parent('tr').after(jun_44);
+
+        var jun_36 = "<tr align='center'><td style='display: none;'>67</td><td>交易性金融负债</td><td id='67'>{$jun_list[36]['start_money']}</td><td>{$jun_list[36]['end_money']}</td></tr>";
+        var jun_43 = "<tr align='center'><td style='display: none;'>68</td><td>应付股利</td><td id='68'>{$jun_list[43]['start_money']}</td><td>{$jun_list[43]['end_money']}</td></tr>";
+        var jun_46 = "<tr align='center'><td style='display: none;'>69</td><td>预提费用</td><td id='69'>{$jun_list[46]['start_money']}</td><td>{$jun_list[46]['end_money']}</td></tr>";
+        var jun_47 = "<tr align='center'><td style='display: none;'>70</td><td>预计负债</td><td id='70'>{$jun_list[47]['start_money']}</td><td>{$jun_list[47]['end_money']}</td></tr>";
+        var jun_48 = "<tr align='center'><td style='display: none;'>71</td><td>一年内到期的非流动负债</td><td id='71'>{$jun_list[48]['start_money']}</td><td>{$jun_list[48]['end_money']}</td></tr>";
+        var jun_49 = "<tr align='center'><td style='display: none;'>72</td><td>其他流动负债</td><td id='72'>{$jun_list[49]['start_money']}</td><td>{$jun_list[49]['end_money']}</td></tr>";
+        $('#27').parent('tr').after(jun_36 + jun_43 + jun_46 + jun_47 + jun_48 + jun_49);
+
+        var jun_51 = "<tr align='center'><td style='display: none;'>77</td><td>长期借款</td><td id='77'>{$jun_list[51]['start_money']}</td><td>{$jun_list[51]['end_money']}</td></tr>";
+        var jun_53 = "<tr align='center'><td style='display: none;'>73</td><td>长期应付款</td><td id='73'>{$jun_list[53]['start_money']}</td><td>{$jun_list[53]['end_money']}</td></tr>";
+        var jun_54 = "<tr align='center'><td style='display: none;'>74</td><td>专项应付款</td><td id='74'>{$jun_list[54]['start_money']}</td><td>{$jun_list[54]['end_money']}</td></tr>";
+        var jun_55 = "<tr align='center'><td style='display: none;'>75</td><td>递延所得税负债</td><td id='75'>{$jun_list[55]['start_money']}</td><td>{$jun_list[55]['end_money']}</td></tr>";
+        var jun_56 = "<tr align='center'><td style='display: none;'>76</td><td>其他长期负债</td><td id='76'>{$jun_list[56]['start_money']}</td><td>{$jun_list[56]['end_money']}</td></tr>";
+        $('#31').parent('tr').after(jun_51+jun_53 + jun_54 + jun_55 + jun_56);
+
+
+
         var shifou = "<?php echo $res;?>";
 //        alert(shifou);
-        var urlBase   = "Base/zichan";
+        var urlBase = "Base/zichan";
 //        if(shifou==1){
 //            popup.error('请先审核基础报表！');
 //            setTimeout(function(){
@@ -104,86 +155,186 @@ input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
         var yufuzhangkuan = $("#5").html();
         var qitayingshoukuan = $("#6").html();
         var cunhuo = $("#7").html();
-        var liudongzichanheji = (huobizijin*1 + yingshoupiaoju*1 + yingshouzhangkuan*1 + yufuzhangkuan*1 + qitayingshoukuan*1 + cunhuo*1).toFixed(2);
-        $("#8").html(liudongzichanheji);
-        
+        var jun_m43 = parseFloat($("#43").html());
+        var jun_m44 = parseFloat($("#44").html());
+        var jun_m45 = parseFloat($("#45").html());
+        var jun_m46 = parseFloat($("#46").html());
+        var jun_m47 = parseFloat($("#47").html());
+        var jun_m48 = parseFloat($("#48").html());
+        var jun_m49 = parseFloat($("#49").html());
+        var liudongzichanheji = (huobizijin * 1 + yingshoupiaoju * 1 + yingshouzhangkuan * 1 + yufuzhangkuan * 1 + qitayingshoukuan * 1 + cunhuo * 1 + jun_m43 + jun_m44 + jun_m45 + jun_m46 + jun_m47 + jun_m48 + jun_m49).toFixed(2);
+        $("#8").html(liudongzichanheji).parent('tr').css('background', '#ccc');
+
         var huobizijin2 = $("#2e").html();
         var yingshoupiaoju2 = $("#3e").html();
         var yingshouzhangkuan2 = $("#4e").html();
         var yufuzhangkuan2 = $("#5e").html();
         var qitayingshoukuan2 = $("#6e").html();
         var cunhuo2 = $("#7e").html();
-        var liudongzichanheji2 = (huobizijin2*1 + yingshoupiaoju2*1 + yingshouzhangkuan2*1 + yufuzhangkuan2*1 + qitayingshoukuan2*1 + cunhuo2*1).toFixed(2);
+        var jun_y43 = parseFloat($("#43").next('td').html());
+        var jun_y44 = parseFloat($("#44").next('td').html());
+        var jun_y45 = parseFloat($("#45").next('td').html());
+        var jun_y46 = parseFloat($("#46").next('td').html());
+        var jun_y47 = parseFloat($("#47").next('td').html());
+        var jun_y48 = parseFloat($("#48").next('td').html());
+        var jun_y49 = parseFloat($("#49").next('td').html());
+        var liudongzichanheji2 = (huobizijin2 * 1 + yingshoupiaoju2 * 1 + yingshouzhangkuan2 * 1 + yufuzhangkuan2 * 1 + qitayingshoukuan2 * 1 + cunhuo2 * 1 + jun_y43 + jun_y44 + jun_y45 + jun_y46 + jun_y47 + jun_y48 + jun_y49).toFixed(2);
         $("#8e").html(liudongzichanheji2);
-        
+
+
+        //长期投资合计
+        $('#10').parent('tr').insertAfter($('#51').parent('tr'));
+        var jun_m50 = parseFloat($("#50").html());
+        var jun_m51 = parseFloat($("#51").html());
+        var jun_m10 = parseFloat($("#10").html());
+        var jun_m_changtouhe = (jun_m50 + jun_m51 + jun_m10).toFixed(2);
+        $('#52').html(jun_m_changtouhe).parent('tr').css('background', '#ccc');
+
+        var jun_y50 = parseFloat($("#50").next('td').html());
+        var jun_y51 = parseFloat($("#51").next('td').html());
+        var jun_y10 = parseFloat($("#10").next('td').html());
+        var jun_y_changtouhe = (jun_y50 + jun_y51 + jun_y10).toFixed(2);
+        $('#52').next('td').html(jun_y_changtouhe);
+
+
+//固定资产合计
+        $('#12').parent('tr').insertAfter($('#58').parent('tr'));
+        var jun_m53 = parseFloat($("#53").html());
+        var jun_m54 = parseFloat($("#54").html());
+        $('#55').html((jun_m53 - jun_m54).toFixed(2));
+        var jun_m55 = parseFloat($("#55").html());
+        var jun_m56 = parseFloat($("#56").html());
+        $('#57').html((jun_m55 - jun_m56).toFixed(2));
+        var jun_m57 = parseFloat($("#57").html());
+        var jun_m58 = parseFloat($("#58").html());
+        var jun_m12 = parseFloat($("#12").html());
+        var jun_m60 = parseFloat($("#60").html());
+        $('#61').html((jun_m57+jun_m58 + jun_m12 + jun_m60).toFixed(2)).parent('tr').css('background', '#ccc');
+
+
+
+        var jun_y53 = parseFloat($("#53").next('td').html());
+        var jun_y54 = parseFloat($("#54").next('td').html());
+        $('#55').next('td').html((jun_y53 - jun_y54).toFixed(2));
+        var jun_y55 = parseFloat($("#55").next('td').html());
+        var jun_y56 = parseFloat($("#56").next('td').html());
+        $('#57').next('td').html((jun_y55 - jun_y56).toFixed(2));
+        var jun_y57 = parseFloat($("#57").next('td').html());
+        var jun_y58 = parseFloat($("#58").next('td').html());
+        var jun_y12 = parseFloat($("#12").next('td').html());
+        var jun_y60 = parseFloat($("#60").next('td').html());
+        $('#61').next('td').html((jun_y57+jun_y58 + jun_y12 + jun_y60).toFixed(2));
+//无形资产及其他资产合计
+        var jun_m13 = parseFloat($("#13").html());
+        var jun_m62 = parseFloat($("#62").html());
+        var jun_m63 = parseFloat($("#63").html());
+        $('#64').html((jun_m13 + jun_m62 + jun_m63).toFixed(2))
+
+        var jun_y13 = parseFloat($("#13").next('td').html());
+        var jun_y62 = parseFloat($("#62").next('td').html());
+        var jun_y63 = parseFloat($("#63").next('td').html());
+        $('#64').next('td').html((jun_y13 + jun_y62 + jun_y63).toFixed(2))
+
         //非流动资产
-        var touzhixingfang = $("#10").html();
-        var gudingzichan = $("#11").html();
-        var zaijiangongchen = $("#12").html();
-        var wuxingzichan = $("#13").html();
-        var qitafeiliudong = $("#14").html();
-        var feiliudongzichanheji = (touzhixingfang*1 + gudingzichan*1 + zaijiangongchen*1 + wuxingzichan*1 + qitafeiliudong*1).toFixed(2);
-        $("#15").html(feiliudongzichanheji);
-        
-        var touzhixingfang2 = $("#10e").html();
-        var gudingzichan2 = $("#11e").html();
-        var zaijiangongchen2 = $("#12e").html();
-        var wuxingzichan2 = $("#13e").html();
-        var qitafeiliudong2 = $("#14e").html();
-        var feiliudongzichanheji2 = (touzhixingfang2*1 + gudingzichan2*1 + zaijiangongchen2*1 + wuxingzichan2*1 + qitafeiliudong2*1).toFixed(2);
-        $("#15e").html(feiliudongzichanheji2);
-        
+
+        var jun_m14 = parseFloat($("#14").html());
+        var jun_m65 = parseFloat($("#65").html());
+        $("#15").html((jun_m14 + jun_m65).toFixed(2)).parent('tr').css('background', '#ccc');
+
+        var jun_y14 = parseFloat($("#14").next('td').html());
+        var jun_y65 = parseFloat($("#65").next('td').html());
+        $("#15").next('td').html((jun_y14 + jun_y65).toFixed(2));
+
         //资产总计
-        var zichanhe = (liudongzichanheji*1+feiliudongzichanheji*1).toFixed(2);
-        var zichanhee = (liudongzichanheji2*1+feiliudongzichanheji2*1).toFixed(2);
-        $("#16").html(zichanhe);
-        $("#16e").html(zichanhee); 
+        var jun_m8 = parseFloat($("#8").html());
+        var jun_m52 = parseFloat($("#52").html());
+        var jun_m61 = parseFloat($("#61").html());
+        var jun_m64 = parseFloat($("#64").html());
+        var jun_m15 = parseFloat($("#15").html());
+        $("#16").html((jun_m8 + jun_m52 + jun_m61 + jun_m64 + jun_m15).toFixed(2)).parent('tr').css('background', '#BCDAF4');
+        var jun_y8 = parseFloat($("#8").next('td').html());
+        var jun_y52 = parseFloat($("#52").next('td').html());
+        var jun_y61 = parseFloat($("#61").next('td').html());
+        var jun_y64 = parseFloat($("#64").next('td').html());
+        var jun_y15 = parseFloat($("#15").next('td').html());
+        $("#16").next('td').html((jun_y8 + jun_y52 + jun_y61 + jun_y64 + jun_y15).toFixed(2));
+
+
         //营运负债合计
-        var yingyun1=$("#18").html();
-        var yingyun2=$("#19").html();
-        var yingyun3=$("#20").html();
-        var yingyun4=$("#21").html();
-        var yingyun5=$("#22").html();
-        var yingyun6=$("#23").html();
-        var yingyunzong = (yingyun1*1+yingyun2*1+yingyun3*1+yingyun4*1+yingyun5*1+yingyun6*1).toFixed(2);
-        $("#24").html(yingyunzong);
+        var yingyun1 = $("#18").html();
+        var yingyun2 = $("#19").html();
+        var yingyun3 = $("#20").html();
+        var yingyun4 = $("#21").html();
+        var yingyun5 = $("#22").html();
+        var yingyun6 = $("#23").html();
+        var yingyun7 = $("#66").html();
+        var yingyunzong = (yingyun1 * 1 + yingyun2 * 1 + yingyun3 * 1 + yingyun4 * 1 + yingyun5 * 1 + yingyun6 * 1 + yingyun7 * 1).toFixed(2);
+        $("#24").html(yingyunzong).parent('tr').css('background', '#BCDAF4');
+        var zichanhe = parseFloat($("#16").html());
         //营运资产
-        $("#25").html((zichanhe-yingyunzong).toFixed(2));
-        
-        var yingyune1=$("#18e").html();
-        var yingyune2=$("#19e").html();
-        var yingyune3=$("#20e").html();
-        var yingyune4=$("#21e").html();
-        var yingyune5=$("#22e").html();
-        var yingyune6=$("#23e").html();
-        var yingyunzonge = (yingyune1*1+yingyune2*1+yingyune3*1+yingyune4*1+yingyune5*1+yingyune6*1).toFixed(2);
+        $("#25").html((zichanhe - yingyunzong).toFixed(2)).parent('tr').css('background', '#99C2E5');
+
+        var yingyune1 = $("#18e").html();
+        var yingyune2 = $("#19e").html();
+        var yingyune3 = $("#20e").html();
+        var yingyune4 = $("#21e").html();
+        var yingyune5 = $("#22e").html();
+        var yingyune6 = $("#23e").html();
+        var yingyune7 = $("#66").next('td').html();
+        var yingyunzonge = (yingyune1 * 1 + yingyune2 * 1 + yingyune3 * 1 + yingyune4 * 1 + yingyune5 * 1 + yingyune6 * 1 + yingyune7 * 1).toFixed(2);
         $("#24e").html(yingyunzonge);
-        $("#25e").html((zichanhee-yingyunzonge).toFixed(2));
+        var zichanhee = parseFloat($("#16").next('td').html());
+        $("#25e").html((zichanhee - yingyunzonge).toFixed(2));
+
+
+
         //流动负债合计
-        var duanqijiekuan = $("#27").html();
-        var yingfupiaoju = $("#28").html();
-        var liudongfuzhaiheji = (duanqijiekuan*1 + yingfupiaoju*1).toFixed(2);
-        $("#29").html(liudongfuzhaiheji);
-        
-        var duanqijiekuan2 = $("#27e").html();
-        var yingfupiaoju2 = $("#28e").html();
-        var liudongfuzhaiheji2 = (duanqijiekuan2*1 + yingfupiaoju2*1).toFixed(2);
-        $("#29e").html(liudongfuzhaiheji2);
-        
+        var jun_m27 = parseFloat($("#27").html());
+        var jun_m67 = parseFloat($("#67").html());
+        var jun_m68 = parseFloat($("#68").html());
+        var jun_m69 = parseFloat($("#69").html());
+        var jun_m70 = parseFloat($("#70").html());
+        var jun_m71 = parseFloat($("#71").html());
+        var jun_m72 = parseFloat($("#72").html());
+        var jun_m28 = parseFloat($("#28").html());
+        $("#29").html((jun_m27 + jun_m67 + jun_m68 + jun_m69 + jun_m70 + jun_m71 + jun_m72 + jun_m28).toFixed(2)).parent('tr').css('background', '#ccc');
+
+        var jun_y27 = parseFloat($("#27").next('td').html());
+        var jun_y67 = parseFloat($("#67").next('td').html());
+        var jun_y68 = parseFloat($("#68").next('td').html());
+        var jun_y69 = parseFloat($("#69").next('td').html());
+        var jun_y70 = parseFloat($("#70").next('td').html());
+        var jun_y71 = parseFloat($("#71").next('td').html());
+        var jun_y72 = parseFloat($("#72").next('td').html());
+        var jun_y28 = parseFloat($("#28").next('td').html());
+        $("#29").next('td').html((jun_y27 + jun_y67 + jun_y68 + jun_y69 + jun_y70 + jun_y71 + jun_y72 + jun_y28).toFixed(2))
+
         //非流动负债合计
-        var yingfuzhaiquan = $("#31").html();
-        var qitafuzhai = $("#32").html();
-        var feiliudongfuzhaiheji = (yingfuzhaiquan*1 + qitafuzhai*1).toFixed(2);
-        $("#33").html(feiliudongfuzhaiheji);
-        
-        var yingfuzhaiquan2 = $("#31e").html();
-        var qitafuzhai2 = $("#32e").html();
-        var feiliudongfuzhaiheji2 = (yingfuzhaiquan2*1 + qitafuzhai2*1).toFixed(2);
-        $("#33e").html(feiliudongfuzhaiheji2);
+        var jun_m31 = parseFloat($("#31").html());
+        var jun_m73 = parseFloat($("#73").html());
+        var jun_m74 = parseFloat($("#74").html());
+        var jun_m75 = parseFloat($("#75").html());
+        var jun_m76 = parseFloat($("#76").html());
+        var jun_m77 = parseFloat($("#77").html());
+        $("#33").html((jun_m77 + jun_m73 + jun_m74 + jun_m75 + jun_m76 + jun_m31).toFixed(2)).parent('tr').css('background', '#ccc');
+
+        var jun_y31 = parseFloat($("#31").next('td').html());
+        var jun_y73 = parseFloat($("#73").next('td').html());
+        var jun_y74 = parseFloat($("#74").next('td').html());
+        var jun_y75 = parseFloat($("#75").next('td').html());
+        var jun_y76 = parseFloat($("#76").next('td').html());
+        var jun_y77 = parseFloat($("#77").next('td').html());
+        $("#33").next('td').html((jun_y77 + jun_y73 + jun_y74 + jun_y75 + jun_y76 + jun_y31).toFixed(2));
+
         //负债合计
-        var fuzhaiheji = (liudongfuzhaiheji*1 + feiliudongfuzhaiheji*1).toFixed(2);
-        $("#34").html(fuzhaiheji);
-        var fuzhaiheji2 = (liudongfuzhaiheji2*1 + feiliudongfuzhaiheji2*1).toFixed(2);
+
+        var jun_m29 = parseFloat($("#29").html());
+        var jun_m33 = parseFloat($("#33").html());
+        var jun_y29 = parseFloat($("#29").next('td').html());
+        var jun_y33 = parseFloat($("#33").next('td').html());
+        var fuzhaiheji = (jun_m29 + jun_m33).toFixed(2);
+        $("#34").html(fuzhaiheji).parent('tr').css('background', '#BCDAF4');
+        var fuzhaiheji2 = (jun_y29 + jun_y33).toFixed(2);
         $("#34e").html(fuzhaiheji2);
         //所有者权益合计
         var shishouziben = $("#36").html();
@@ -191,74 +342,75 @@ input{height: 24px;line-height: 35px;border: 0px;border-radius: 5px;}
         var yingyugongjijin = $("#38").html();
         var weifenpeilirun = $("#39").html();
         var shaoshugudongquanyi = $("#40").html();
-        var suoyouzhequanyiheji = (shishouziben*1+zibengongjijin*1+yingyugongjijin*1+weifenpeilirun*1+shaoshugudongquanyi*1).toFixed(2);
-        $("#41").html(suoyouzhequanyiheji);
-        
+        var suoyouzhequanyiheji = (shishouziben * 1 + zibengongjijin * 1 + yingyugongjijin * 1 + weifenpeilirun * 1 + shaoshugudongquanyi * 1).toFixed(2);
+        $("#41").html(suoyouzhequanyiheji).parent('tr').css('background', '#BCDAF4');
+
         var shishouziben2 = $("#36e").html();
         var zibengongjijin2 = $("#37e").html();
         var yingyugongjijin2 = $("#38e").html();
         var weifenpeilirun2 = $("#39e").html();
         var shaoshugudongquanyi2 = $("#40e").html();
-        var suoyouzhequanyiheji2 = (shishouziben2*1+zibengongjijin2*1+yingyugongjijin2*1+weifenpeilirun2*1+shaoshugudongquanyi2*1).toFixed(2);
+        var suoyouzhequanyiheji2 = (shishouziben2 * 1 + zibengongjijin2 * 1 + yingyugongjijin2 * 1 + weifenpeilirun2 * 1 + shaoshugudongquanyi2 * 1).toFixed(2);
         $("#41e").html(suoyouzhequanyiheji2);
-        
+
         //融资和所得者
-        var quanyi = (fuzhaiheji*1+suoyouzhequanyiheji*1).toFixed(2);
-        var quanyihee = (fuzhaiheji2*1+suoyouzhequanyiheji2*1).toFixed(2);
-        $("#42").html(quanyi);
+        var quanyi = (fuzhaiheji * 1 + suoyouzhequanyiheji * 1).toFixed(2);
+        var quanyihee = (fuzhaiheji2 * 1 + suoyouzhequanyiheji2 * 1).toFixed(2);
+        $("#42").html(quanyi).parent('tr').css('background', '#99C2E5');
         $("#42e").html(quanyihee);
-        
+
 //        alert(window.location.href);
         var aUrl = window.location.href;
 //        var a = aUrl.substring(0, aUrl.lastIndexOf('/'));
         var b = aUrl.substr(aUrl.lastIndexOf('/') + 1);
 //        console.log(a);
 //        console.log(b);
-        
-        if(b==="zichan.html"){
+
+        if (b === "zichan.html") {
             var myDate = new Date();
 //            myDate.getYear();        //获取当前年份(2位)
             myDate.getFullYear();    //获取完整的年份(4位,1970-????)
             var month = myDate.getMonth();       //获取当前月份(0-11,0代表1月)
-            if(month<=8){
-                month = '0' + (month*1 + 1);
-            }else{
-                month = month*1 + 1;
+            if (month <= 8) {
+                month = '0' + (month * 1 + 1);
+            } else {
+                month = month * 1 + 1;
             }
 //            console.log(myDate.getFullYear()+'-'+month);
-            b = myDate.getFullYear()+'-'+month;
+            b = myDate.getFullYear() + '-' + month;
         }
-        
+
         popup.success('管理资产负债表的数据生成中！请稍候...');
-        setTimeout(function(){
+        setTimeout(function () {
             popup.close("asyncbox_success");
-        },9000);
-        $.post("{:U('Manage/isExistMrich')}",{'date':b},function(data){
-            if(data==0){
+        }, 9000);
+        $.post("{:U('Manage/isExistMrich')}", {'date': b}, function (data) {
+            if (data == 0) {
                 //存在就修改数据
-                $("table tr:gt(0)").each(function(i){
+                $("table tr:gt(0)").each(function (i) {
                     var maId = $(this).children("td:eq(0)").text();
                     var maName = $(this).children("td:eq(1)").text();
                     var maStart = $(this).children("td:eq(2)").text();
                     var maEnd = $(this).children("td:eq(3)").text();
-                    $.post("{:U('Manage/editMrich')}",{'ma_id':maId,'name':maName,'start_money':maStart,'end_money':maEnd,'date':b},function(data){
+                    $.post("{:U('Manage/editMrich')}", {'ma_id': maId, 'name': maName, 'start_money': maStart, 'end_money': maEnd, 'date': b}, function (data) {
 //                        
                     });
                 });
             }
-            if(data==1){
+            if (data == 1) {
                 //不存在就添加数据
-                $("table tr:gt(0)").each(function(i){
+                $("table tr:gt(0)").each(function (i) {
                     var maId = $(this).children("td:eq(0)").text();
                     var maName = $(this).children("td:eq(1)").text();
                     var maStart = $(this).children("td:eq(2)").text();
                     var maEnd = $(this).children("td:eq(3)").text();
-                    $.post("{:U('Manage/addMrich')}",{'ma_id':maId,'name':maName,'start_money':maStart,'end_money':maEnd,'date':b},function(data){
+                    $.post("{:U('Manage/addMrich')}", {'ma_id': maId, 'name': maName, 'start_money': maStart, 'end_money': maEnd, 'date': b}, function (data) {
 
                     });
                 });
-            } 
+            }
         });
-        
-  });
+
+
+    });
 </script>

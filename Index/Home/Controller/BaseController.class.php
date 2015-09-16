@@ -963,9 +963,12 @@ class BaseController extends CommonController {
     public function createEntryZ() {
         //在数据库中查找所有的当月的期初余额来进行对比，如果有值就不让上传
         $date = $_POST['date'];
+        if (!$date) {
+            $date = date('Y-m', time());
+        }
         $cnum = $_SESSION['current_account']['cnum'];
-        $isCunzai = D('Entry','Service')->isExistEntry($cnum,$date);
-        if(!$isCunzai){
+        $isCunzai = D('Entry', 'Service')->isExistEntry($cnum, $date);
+        if (!$isCunzai) {
             if (!isset($_POST)) {
                 return $this->errorReturn('无效的操作！');
             }
@@ -973,66 +976,106 @@ class BaseController extends CommonController {
             $entry = $_POST;
             array_shift($entry);
             foreach ($entry as $k => $v) {
-                $result = D('Entry','Service')->addEntry($cnum,$v,$date);
+                $result = D('Entry', 'Service')->addEntry($cnum, $v, $date);
             }
 //        var_dump($_POST);die;
-            if($result){
+            if ($result) {
                 $add = array(
                     "bian" => Array(
                         "param_id" => 3,
-                        "now_money" => $entry['shou']['now_money']+$entry['liang']['now_money'],
-                        "sum_money" => $entry['shou']['sum_money']+$entry['liang']['sum_money']
+                        "now_money" => $entry['shou']['now_money'] + $entry['liang']['now_money'],
+                        "sum_money" => $entry['shou']['sum_money'] + $entry['liang']['sum_money']
                     ),
                     "cheng" => Array(
                         "param_id" => 7,
-                        "now_money" => $this->getEntryZa(),
-                        "sum_money" => $this->getEntryZa2()
+                        "now_money" => $this->getEntryZa($date),
+                        "sum_money" => $this->getEntryZa2($date)
                     )
                 );
-    //        dump($entry);exit();
-    //        $data = array_merge($entry, $add);
-            //print_r($data);
+                //        dump($entry);exit();
+                //        $data = array_merge($entry, $add);
+                //print_r($data);
                 foreach ($add as $k => $v) {
-                    $result1 = D('Entry','Service')->addEntry($cnum,$v,$date);
+                    $result1 = D('Entry', 'Service')->addEntry($cnum, $v, $date);
                 }
                 if ($result1) {
                     $add2 = array(
                         "gu" => Array(
                             "param_id" => 6,
-                            "now_money" => $this->getEntryGu(),
-                            "sum_money" => $this->getEntryGu2()
+                            "now_money" => $this->getEntryGu($date),
+                            "sum_money" => $this->getEntryGu2($date)
                         )
                     );
-        //        dump($entry);exit();
-        //        $data = array_merge($entry, $add);
-                //print_r($data);
                     foreach ($add2 as $k => $v) {
-                        $result2 = D('Entry','Service')->addEntry($cnum,$v,$date);
+                        $result2 = D('Entry', 'Service')->addEntry($cnum, $v, $date);
+                    }
+
+                    $lirun_10 = D('Rate', 'Service')->getRateZi($cnum, $date, 10);
+                    $lirun_14 = D('Rate', 'Service')->getRateZi($cnum, $date, 14);
+                    $lirun_12 = D('Rate', 'Service')->getRateZi($cnum, $date, 9);
+                    $lirun_15 = D('Rate', 'Service')->getRateZi($cnum, $date, 12);
+                    $lirun_19 = D('Rate', 'Service')->getRateZi($cnum, $date, 16);
+                    $folw_11 = D('Flow', 'Service')->getFlowZi($cnum, $date, 11);
+                    $bilv_m = $folw_11 / ($lirun_12[0]['now_money'] + $lirun_15[0]['now_money'] + $lirun_19[0]['now_money']);
+                    $bilv_y = $folw_11 / ($lirun_12[0]['sum_money'] + $lirun_15[0]['sum_money'] + $lirun_19[0]['sum_money']);
+                    $bilv_m = floor($bilv_m * 10000) / 10000 * 100;
+                    $bilv_y = floor($bilv_y * 10000) / 10000 * 100;
+                    $add5 = array(
+                        "2" => Array(
+                            "param_id" => '8',
+                            "now_money" => $lirun_10[0]['now_money'],
+                            "sum_money" => $lirun_10[0]['sum_money']
+                        ),
+                        "3" => Array(
+                            "param_id" => '9',
+                            "now_money" => $lirun_14[0]['now_money'],
+                            "sum_money" => $lirun_14[0]['sum_money']
+                        ),
+                        "4" => Array(
+                            "param_id" => '10',
+                            "now_money" => $bilv_m,
+                            "sum_money" => $bilv_y
+                        ),
+                    );
+                    foreach ($add5 as $v) {
+                        $result = D('Entry', 'Service')->addEntry($cnum, $v, $date);
                     }
                     echo 0;
-                }else{
+                } else {
                     echo 1;
                 }
-            }else{
+            } else {
                 echo 1;
             }
-        }else{
+        } else {
             echo 1;
         }
     }
     
-    public function updateEntryZ() {
+  public function updateEntryZ() {
 //        var_dump($_POST);
-        $date = $_GET['date'];
+        $date = $_POST['date'];
+        if(!$date){
+            $date = date('Y-m',time());
+        }
         if (!isset($_POST)) {
             return $this->errorReturn('无效的操作！');
         }
         $cnum = $_SESSION['current_account']['cnum'];
         $entry = $_POST;
-//        dump($entry);exit();
         foreach ($entry as $k => $v) {
             $result = D('Entry','Service')->editEntry($v);
         }
+        $lirun_10 = D('Rate','Service')->getRateZi($cnum,$date,10);
+        $lirun_14 = D('Rate','Service')->getRateZi($cnum,$date,14);
+        $lirun_12 = D('Rate','Service')->getRateZi($cnum,$date,9);
+        $lirun_15 = D('Rate','Service')->getRateZi($cnum,$date,12);
+        $lirun_19 = D('Rate','Service')->getRateZi($cnum,$date,16);
+        $folw_11 = D('Flow','Service')->getFlowZi($cnum,$date,11);
+        $bilv_m = $folw_11/($lirun_12[0]['now_money']+ $lirun_15[0]['now_money']+ $lirun_19[0]['now_money']);
+        $bilv_y = $folw_11/($lirun_12[0]['sum_money']+ $lirun_15[0]['sum_money']+ $lirun_19[0]['sum_money']);
+        $bilv_m = floor($bilv_m*10000)/10000*100;
+        $bilv_y = floor($bilv_y*10000)/10000*100;
         $add = array(
             "0" => Array(
                 "param_id"  => '3',
@@ -1041,17 +1084,32 @@ class BaseController extends CommonController {
             ),
             "1" => Array(
                 "param_id"  => '7',
-                "now_money" => $this->getEntryZa(),
-                "sum_money" => $this->getEntryZa2()
-            )
+                "now_money" => $this->getEntryZa($date),
+                "sum_money" => $this->getEntryZa2($date)
+            ),
+            "2" => Array(
+                "param_id"  => '8',
+                "now_money" => $lirun_10[0]['now_money'],
+                "sum_money" => $lirun_10[0]['sum_money']
+            ),
+            "3" => Array(
+                "param_id"  => '9',
+                "now_money" => $lirun_14[0]['now_money'],
+                "sum_money" => $lirun_14[0]['sum_money']
+            ),
+            "4" => Array(
+                "param_id"  => '10',
+                "now_money" => $bilv_m,
+                "sum_money" => $bilv_y
+            ),
         );
         foreach ($add as $ka => $va) {
             $result = D('Entry','Service')->editEntry3($date,$cnum,$va);
         }
         $add2 = array(
             "param_id"  => '6',
-            "now_money" => $this->getEntryGu(),
-            "sum_money" => $this->getEntryGu2()
+            "now_money" => $this->getEntryGu($date),
+            "sum_money" => $this->getEntryGu2($date)
         );
         $result2 = D('Entry','Service')->editEntry3($date,$cnum,$add2);
         if($result2){

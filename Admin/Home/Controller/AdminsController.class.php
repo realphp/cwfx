@@ -11,7 +11,7 @@ class AdminsController extends CommonController {
      * @return
      */
     public function index() {
-        $where = "is_super=1";
+        $where = "kind=1";
         $result = $this->getPagination('Admin',$where,$fields,'id desc');
 
         $this->assign('admins', $result['data']);
@@ -21,7 +21,7 @@ class AdminsController extends CommonController {
     }
     //客户
     public function customers(){
-        $where = "is_super=0";
+        $where = "kind=1";
         $result = D('Admin','Service')->getAllCustomers($where);
 //        dump($result);
         return $result;

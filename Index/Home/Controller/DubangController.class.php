@@ -196,7 +196,7 @@ class DubangController extends CommonController {
                     $result['0']['lei']  =  ((round($sun04C17/$sun04C6,4))*100);
                 break;
                 case '2':
-                    $result['1']['yue']  =  ((round($sun04B26/$zi05C51,4))*100).'%';
+                    $result['1']['yue']  =  ((round($sun04B26/$zi05C51,4))*100);
                     $result['1']['lei']  =  ((round($sun04C26/$zi05C51,4))*100);
                 break;
                 case '3':
